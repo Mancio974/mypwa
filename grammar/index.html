@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammatica Coreana - Studio Progressivo</title>
+    <link rel="manifest" href="data:application/json;charset=utf-8,{%22name%22:%22Grammatica%20Coreana%22,%22short_name%22:%22Korean%20Grammar%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23e8f4f8%22,%22theme_color%22:%22%236b9bd1%22,%22icons%22:[{%22src%22:%22data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiM2YjliZDEiLz4KPHRleHQgeD0iOTYiIHk9IjEwNCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7tlZzqtIE8L3RleHQ+Cjwvc3ZnPgo=%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]}">
+    <style>
+        :root {
+            --primary-color: #6b9bd1;
+            --secondary-color: #89a8c7;
+            --accent-color: #4a7ba7;
+            --bg-light: #f8fbfc;
+            --bg-card: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #5a6c7d;
+            --success-color: #52c41a;
+            --warning-color: #fa8c16;
+            --border-color: #e8f4f8;
+            --shadow: 0 2px 8px rgba(107, 155, 209, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #e8f4f8 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--bg-card);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .korean-text {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: var(--border-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .progress-percent {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .topic-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(107, 155, 209, 0.15);
+        }
+
+        .topic-card.completed {
+            border-color: var(--success-color);
+        }
+
+        .topic-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .topic-card.locked:hover {
+            transform: none;
+        }
+
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .topic-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .topic-status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+
+        .topic-status.completed {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .topic-status.locked {
+            background: var(--text-secondary);
+            color: white;
+        }
+
+        .topic-status.available {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .topic-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .topic-content {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .content-section {
+            margin-bottom: 2rem;
+        }
+
+        .content-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .example {
+            background: var(--border-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .korean {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .translation {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .quiz-container {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .question {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .options {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .option {
+            background: var(--border-color);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: var(--primary-color);
+            background: #f0f8ff;
+        }
+
+        .option.selected {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .option.correct {
+            border-color: var(--success-color);
+            background: var(--success-color);
+            color: white;
+        }
+
+        .option.incorrect {
+            border-color: #ff4d4f;
+            background: #ff4d4f;
+            color: white;
+        }
+
+        .quiz-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: var(--accent-color);
+            transform: translateY(-1px);
+        }
+
+        .btn.secondary {
+            background: var(--text-secondary);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .translator {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .translator-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .word-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .word-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .word-item:hover {
+            background: var(--border-color);
+        }
+
+        .word-korean {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .word-italian {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .back-btn {
+            margin-bottom: 1rem;
+        }
+
+        .achievement {
+            background: linear-gradient(135deg, var(--success-color), #73d13d);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .dark-mode {
+            --bg-light: #1a1a1a;
+            --bg-card: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --border-color: #404040;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header-content {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .translator {
+                grid-template-columns: 1fr;
+            }
+            
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <div class="logo">Grammatica Coreana</div>
+                <div class="korean-text">한국어 문법</div>
+            </div>
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="showTab('dashboard')">Dashboard</button>
+                <button class="tab-btn" onclick="showTab('topics')">Argomenti</button>
+                <button class="tab-btn" onclick="showTab('translator')">Traduttore</button>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content">
+            <div class="dashboard">
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <div class="progress-title">Livello Base</div>
+                        <div class="progress-percent" id="base-progress">0%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="base-progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <div class="progress-title">Livello Intermedio</div>
+                        <div class="progress-percent" id="intermediate-progress">0%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="intermediate-progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="achievement-area"></div>
+            
+            <div class="progress-card">
+                <h3>I tuoi progressi</h3>
+                <p>Completa gli argomenti base per sbloccare quelli intermedi. Hai bisogno dell'80% di completamento per procedere al livello successivo.</p>
+                <div id="recent-activity"></div>
+            </div>
+        </div>
+
+        <!-- Topics Tab -->
+        <div id="topics" class="tab-content hidden">
+            <div id="topics-view">
+                <h2>Argomenti di Studio</h2>
+                <div class="topics-grid" id="topics-grid"></div>
+            </div>
+            
+            <div id="topic-detail" class="hidden">
+                <button class="btn secondary back-btn" onclick="showTopicsList()">← Torna agli argomenti</button>
+                <div id="topic-content"></div>
+                <div id="quiz-section"></div>
+            </div>
+        </div>
+
+        <!-- Translator Tab -->
+        <div id="translator" class="tab-content hidden">
+            <h2>Mini Traduttore</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">Le 300 parole più comuni in coreano</p>
+            
+            <div class="translator">
+                <div class="translator-section">
+                    <h3>Cerca in Italiano</h3>
+                    <input type="text" class="search-box" id="search-italian" placeholder="Cerca parola italiana...">
+                    <div class="word-list" id="italian-results"></div>
+                </div>
+                
+                <div class="translator-section">
+                    <h3>Cerca in Coreano</h3>
+                    <input type="text" class="search-box" id="search-korean" placeholder="Cerca parola coreana...">
+                    <div class="word-list" id="korean-results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Database structure
+        const grammarData = {
+            topics: [
+                // LIVELLO BASE
+                {
+                    id: 'hangul',
+                    level: 'base',
+                    title: 'Sistema di scrittura Hangul',
+                    order: 1,
+                    description: 'Impara l\'alfabeto coreano: consonanti, vocali e combinazioni',
+                    unlock_requirement: null,
+                    content: {
+                        explanation: `L'Hangul (한글) è l'alfabeto coreano, creato nel XV secolo dal re Sejong il Grande. È composto da 14 consonanti base e 10 vocali base che si combinano per formare sillabe.
+
+Le consonanti base sono: ㄱ, ㄴ, ㄷ, ㄹ, ㅁ, ㅂ, ㅅ, ㅇ, ㅈ, ㅊ, ㅋ, ㅌ, ㅍ, ㅎ
+Le vocali base sono: ㅏ, ㅓ, ㅗ, ㅜ, ㅡ, ㅣ, ㅑ, ㅕ, ㅛ, ㅠ
+
+Ogni sillaba coreana deve contenere almeno una consonante e una vocale, e può avere una consonante finale.`,
+                        examples: [
+                            { korean: '한국', translation: 'Corea' },
+                            { korean: '안녕하세요', translation: 'Ciao (formale)' },
+                            { korean: '감사합니다', translation: 'Grazie' }
+                        ],
+                        common_mistakes: [
+                            'Non confondere ㅏ e ㅓ - la prima è più aperta',
+                            'ㅇ all\'inizio di sillaba è muta, alla fine suona come "ng"'
+                        ]
+                    },
+                    exercises: [
+                        {
+                            type: 'multiple_choice',
+                            question: 'Come si pronuncia ㅏ?',
+                            options: ['a', 'e', 'o', 'u'],
+                            correct: 0
+                        },
+                        {
+                            type: 'multiple_choice',
+                            question: 'Quale consonante rappresenta il suono "k/g"?',
+                            options: ['ㄱ', 'ㄴ', 'ㄷ', 'ㅂ'],
+                            correct: 0
+                        }
+                    ]
+                },
+                {
+                    id: 'particles',
+                    level: 'base',
+                    title: 'Particelle fondamentali',
+                    order: 2,
+                    description: 'Le particelle 은/는, 이/가, 을/를 e il loro uso',
+                    unlock_requirement: 'hangul',
+                    content: {
+                        explanation: `Le particelle sono elementi essenziali del coreano che indicano la funzione grammaticale delle parole nella frase.
+
+- 은/는: particella del topic (ciò di cui parliamo)
+- 이/가: particella del soggetto (chi compie l'azione)
+- 을/를: particella dell'oggetto (su cosa agisce il verbo)
+
+La scelta tra le varianti dipende dalla consonante finale della parola precedente.`,
+                        examples: [
+                            { korean: '저는 학생입니다', translation: 'Io sono uno studente' },
+                            { korean: '책이 있어요', translation: 'C\'è un libro' },
+                            { korean: '사과를 먹어요', translation: 'Mangio una mela' }
+                        ],
+                        common_mistakes: [
+                            'Non usare sempre 은/는 - dipende dal contesto',
+                            'La differenza tra topic e soggetto è sottile ma importante'
+                        ]
+                    },
+                    exercises: [
+                        {
+                            type: 'multiple_choice',
+                            question: 'Quale particella usi dopo una parola che finisce con consonante per il topic?',
+                            options: ['은', '는', '이', '가'],
+                            correct: 0
+                        }
+                    ]
+                },
+                {
+                    id: 'verb-essere',
+                    level: 'base',
+                    title: 'Verbo "essere"',
+                    order: 3,
+                    description: 'I verbi 이다 (essere) e 아니다 (non essere)',
+                    unlock_requirement: 'particles',
+                    content: {
+                        explanation: `Il verbo "essere" in coreano si esprime con 이다. Ha diverse forme a seconda del livello di formalità.
+
+Forme del verbo 이다:
+- Informale: 이야/야
+- Formale basso: 이에요/예요
+- Formale alto: 입니다
+
+Il verbo negativo "non essere" è 아니다, con forme simili.`,
+                        examples: [
+                            { korean: '저는 선생님입니다', translation: 'Io sono un insegnante' },
+                            { korean: '이것은 책이에요', translation: 'Questa è un libro' },
+                            { korean: '학생이 아니에요', translation: 'Non è uno studente' }
+                        ],
+                        common_mistakes: [
+                            '이다 si attacca direttamente al nome senza spazio',
+                            'Non dimenticare il livello di formalità appropriato'
+                        ]
+                    },
+                    exercises: [
+                        {
+                            type: 'multiple_choice',
+                            question: 'Come si dice "sono un dottore" formalmente?',
+                            options: ['의사입니다', '의사이에요', '의사야', '의사다'],
+                            correct: 0
+                        }
+                    ]
+                },
+                {
+                    id: 'word-order',
+                    level: 'base',
+                    title: 'Ordine delle parole',
+                    order: 4,
+                    description: 'La struttura SOV (Soggetto-Oggetto-Verbo) del coreano',
+                    unlock_requirement: 'verb-essere',
+                    content: {
+                        explanation: `Il coreano segue l'ordine SOV (Soggetto-Oggetto-Verbo), diverso dall'italiano SVO.
+
+Struttura base:
+[Soggetto + 이/가] [Oggetto + 을/를] [Verbo]
+
+Il verbo va sempre alla fine della frase. Soggetto e oggetto possono essere omessi se chiari dal contesto.`,
+                        examples: [
+                            { korean: '저는 밥을 먹어요', translation: 'Io mangio il riso' },
+                            { korean: '친구가 책을 읽어요', translation: 'L\'amico legge un libro' },
+                            { korean: '어머니가 요리를 해요', translation: 'La mamma cucina' }
+                        ],
+                        common_mistakes: [
+                            'Non mettere il verbo al centro della frase come in italiano',
+                            'L\'ordine può variare per enfasi, ma il verbo resta sempre finale'
+                        ]
+                    },
+                    exercises: [
+                        {
+                            type: 'multiple_choice',
+                            question: 'Qual è l\'ordine corretto per "Il cane mangia il cibo"?',
+                            options: ['개가 음식을 먹어요', '먹어요 개가 음식을', '음식을 개가 먹어요', '개가 먹어요 음식을'],
+                            correct: 0
+                        }
+                    ]
+                },
+                {
+                    id: 'formality',
+                    level: 'base',
+                    title: 'Livelli di formalità',
+                    order: 5,
+                    description: '반말 (informale) e 존댓말 (formale): quando e come usarli',
+                    unlock_requirement: 'word-order',
+                    content: {
+                        explanation: `Il coreano ha diversi livelli di formalità che dipendono dall'età, stato sociale e familiarità.
+
+반말 (banmal - informale):
+- Usato con amici, familiari più giovani
+- Forme verbali senza 요/습니다
+
+존댓말 (jondaenmal - formale):
+- Usato con sconosciuti, persone più grandi, superiori
+- Include 요 (medio-formale) e 습니다 (alto-formale)`,
+                        examples: [
+                            { korean: '뭐 해? (informale)', translation: 'Cosa fai?' },
+                            { korean: '뭐 해요? (formale)', translation: 'Cosa fa?' },
+                            { korean: '무엇을 하십니까? (molto formale)', translation: 'Cosa fa?' }
+                        ],
+                        common_mistakes: [
+                            'Usare informale con persone più grandi è maleducazione grave',
+                            'Il livello di formalità deve essere consistente in tutta la conversazione'
+                        ]
+                    },
+                    exercises: [
+                        {
+                            type: 'multiple_choice',
+                            question: 'Come chiedi "Come stai?" a un professore?',
+                            options: ['어떻게 지내요?', '어떻게 지내?', '잘 지내?', '뭐해?'],
+                            correct: 0
+                        }
+                    ]
+                },
+                // LIVELLO INTERMEDIO
+                {
+                    id: 'verb-conjugations',
+                    level: 'intermediate',
+                    title: 'Coniugazioni verbali',
+                    order: 6,
+                    description: 'Presente, passato e futuro: -아/어요, -았/었어요, -겠어요',
+                    unlock_requirement: null, // Si sblocca con 80% del base
+                    content: {
+                        explanation: `I verbi coreani si coniugano aggiungendo terminazioni al tema verbale.
+
+Presente (-아/어요):
+- Verbi in ㅏ/ㅗ: -아요
+- Altri verbi: -어요
+- 하다 diventa 해요
+
+Passato (-았/었어요):
+- Segue le stesse regole del presente
+- Si aggiunge -ㅆ- prima della terminazione
+
+Futuro:
+- -겠어요 (intenzione/supposizione)
+- -(으)ㄹ 거예요 (piani/previsioni)`,
+                        examples: [
+                            { korean: '가요 (presente) → 갔어요 (passato)', translation: 'va → è andato' },
+                            { korean: '먹어요 (presente) → 먹었어요 (passato)', translation: 'mangia → ha mangiato' },
+                            { korean: '내일 비가 오겠어요', translation: 'Domani pioverà' }
+                        ],
+                        common_mistakes: [
+                            'Scegliere 아 o 어 basandosi sulla vocale del tema',
+                            'Non confondere i due tipi di futuro'
+                        ]
+                    },
+                    exercises: [
+                        {
+                            type: 'multiple_choice',
+                            question: 'Come si coniuga 보다 (vedere) al passato?',
+                            options: ['봤어요', '보았어요', '보겠어요', '볼 거예요'],
+                            correct: 0
+                        }
+                    ]
+                },
+                {
+                    id: 'adjectives',
+                    level: 'intermediate',
+                    title: 'Aggettivi',
+                    order: 7,
+                    description: 'Differenze con i verbi e uso predicativo vs attributivo',
+                    unlock_requirement: 'verb-conjugations',
+                    content: {
+                        explanation: `Gli aggettivi coreani si comportano come verbi e si coniugano. Si dividono in due categorie principali:
+
+Uso predicativo (fine frase):
+- Si coniugano come i verbi: 크다 → 커요
+
+Uso attributivo (prima del nome):
+- Si aggiunge -(으)ㄴ: 크다 → 큰 + nome
+- Per aggettivi che finiscono in consonante: -은
+- Per aggettivi che finiscono in vocale: -ㄴ
+
+Alcuni aggettivi irregolari cambiano forma nell'uso attributivo.`,
+                        examples: [
+                            { korean: '이 집은 커요', translation: 'Questa casa è grande' },
+                            { korean: '큰 집', translation: 'casa grande' },
+                            { korean: '예쁜 꽃', translation: 'bel fiore' }
+                        ],
+                        common_mistakes: [
+                            'Non dimenticare di coniugare gli aggettivi come verbi',
+                            'Uso corretto della forma attributiva prima dei nomi'
+                        ]
+                    },
+                    exercises: [
+                        {
+                            type: 'multiple_choice',
+                            question: 'Come si dice "macchina nuova"?',
+                            options: ['새로운 차', '새로워요 차', '새로운다 차', '새로 차'],
+                            correct: 0
+                        }
+                    ]
+                },
+                {
+                    id: 'place-time-particles',
+                    level: 'intermediate',
+                    title: 'Particelle di luogo e tempo',
+                    order: 8,
+                    description: 'Particelle 에, 에서, 부터/까지 per esprimere luogo e tempo',
+                    unlock_requirement: 'adjectives',
+                    content: {
+                        explanation: `Le particelle di luogo e tempo sono essenziali per esprimere dove e quando avvengono le azioni.
+
+에: indica luogo di destinazione o momento specifico
+- 학교에 가요 (vado a scuola)
+- 3시에 만나요 (ci incontriamo alle 3)
+
+에서: indica luogo di azione
+- 도서관에서 공부해요 (studio in biblioteca)
+
+부터: "da" (punto di partenza temporale)
+까지: "fino a" (punto di arrivo)
+- 9시부터 5시까지 (dalle 9 alle 5)`,
+                        examples: [
+                            { korean: '집에 가요', translation: 'Vado a casa' },
+                            { korean: '카페에서 커피를 마셔요', translation: 'Bevo caffè al café' },
+                            { korean: '월요일부터 금요일까지', translation: 'Da lunedì a venerdì' }
+                        ],
+                        common_mistakes: [
+                            'Confondere 에 e 에서 - il primo è destinazione, il secondo è luogo di azione',
+                            'Non usare 에서 con verbi di movimento'
+                        ]
+                    },
+                    exercises: [
+                        {
+                            type: 'multiple_choice',
+                            question: 'Quale particella usi in "Studio a casa"?',
+                            options: ['집에서', '집에', '집을', '집이'],
+                            correct: 0
+                        }
+                    ]
+                },
+                {
+                    id: 'numbers',
+                    level: 'intermediate',
+                    title: 'Sistema numerico',
+                    order: 9,
+                    description: 'Numeri sino-coreani vs nativi e contatori principali',
+                    unlock_requirement: 'place-time-particles',
+                    content: {
+                        explanation: `Il coreano ha due sistemi numerici:
+
+Numeri nativi coreani (1-99):
+하나, 둘, 셋, 넷, 다섯, 여섯, 일곱, 여덟, 아홉, 열
+
+Numeri sino-coreani (da 1 in poi):
+일, 이, 삼, 사, 오, 육, 칠, 팔, 구, 십
+
+I contatori determinano quale sistema usare:
+- Età, oggetti, persone: numeri nativi
+- Date, soldi, minuti: numeri sino-coreani
+
+Contatori comuni: 개 (oggetti), 명/분 (persone), 살 (età)`,
+                        examples: [
+                            { korean: '사과 세 개', translation: 'tre mele' },
+                            { korean: '학생 다섯 명', translation: 'cinque studenti' },
+                            { korean: '3월 15일', translation: '15 marzo' }
+                        ],
+                        common_mistakes: [
+                            'Usare il sistema numerico sbagliato con certi contatori',
+                            'I numeri nativi cambiano forma prima dei contatori'
+                        ]
+                    },
+                    exercises: [
+                        {
+                            type: 'multiple_choice',
+                            question: 'Come si dice "due libri"?',
+                            options: ['책 두 권', '책 이 권', '책 둘 권', '책 2 권'],
+                            correct: 0
+                        }
+                    ]
+                },
+                {
+                    id: 'questions',
+                    level: 'intermediate',
+                    title: 'Forme interrogative',
+                    order: 10,
+                    description: 'Parole interrogative: 뭐, 어디, 언제, 누구 e costruzione domande',
+                    unlock_requirement: 'numbers',
+                    content: {
+                        explanation: `Le domande in coreano si formano con parole interrogative specifiche:
+
+뭐/무엇: cosa?
+어디: dove?
+언제: quando?
+누구: chi?
+어떻게: come?
+왜: perché?
+몇: quanto/quanti?
+
+Le domande sì/no si formano con l'intonazione ascendente o aggiungendo 까?`,
+                        examples: [
+                            { korean: '뭐 해요?', translation: 'Cosa fai?' },
+                            { korean: '어디 가요?', translation: 'Dove vai?' },
+                            { korean: '언제 와요?', translation: 'Quando vieni?' },
+                            { korean: '밥 먹었어요?', translation: 'Hai mangiato?' }
+                        ],
+                        common_mistakes: [
+                            'L\'ordine delle parole resta SOV anche nelle domande',
+                            'Alcune parole interrogative richiedono contatori specifici'
+                        ]
+                    },
+                    exercises: [
+                        {
+                            type: 'multiple_choice',
+                            question: 'Come chiedi "Quanti anni hai?"',
+                            options: ['몇 살이에요?', '얼마 살이에요?', '언제 살이에요?', '무엇 살이에요?'],
+                            correct: 0
+                        }
+                    ]
+                },
+                {
+                    id: 'connectors',
+                    level: 'intermediate',
+                    title: 'Connettori base',
+                    order: 11,
+                    description: 'Connettori 그래서, 하지만, 그런데 per collegare le frasi',
+                    unlock_requirement: 'questions',
+                    content: {
+                        explanation: `I connettori permettono di collegare frasi e idee:
+
+그래서: quindi, perciò (conseguenza)
+하지만: però, ma (contrasto forte)
+그런데: però, comunque, a proposito (contrasto leggero o cambio di argomento)
+그리고: e, inoltre (aggiunta)
+또는: oppure (alternativa)
+
+I connettori si mettono all'inizio della seconda frase.`,
+                        examples: [
+                            { korean: '비가 와요. 그래서 집에 있어요', translation: 'Piove. Quindi sto a casa' },
+                            { korean: '피곤해요. 하지만 일해야 해요', translation: 'Sono stanco. Però devo lavorare' },
+                            { korean: '공부했어요. 그런데 시험이 어려웠어요', translation: 'Ho studiato. Però l\'esame era difficile' }
+                        ],
+                        common_mistakes: [
+                            'Confondere 하지만 e 그런데 - il primo è più forte',
+                            'Non tutti i connettori italiani hanno equivalenti diretti'
+                        ]
+                    },
+                    exercises: [
+                        {
+                            type: 'multiple_choice',
+                            question: 'Quale connettore usi per "È tardi, quindi vado a dormire"?',
+                            options: ['그래서', '하지만', '그런데', '또는'],
+                            correct: 0
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Common Korean words dictionary (300 most common words)
+        const koreanWords = [
+            // Pronomi e determinanti
+            { korean: '나', italian: 'io (informale)' },
+            { korean: '저', italian: 'io (formale)' },
+            { korean: '너', italian: 'tu' },
+            { korean: '우리', italian: 'noi' },
+            { korean: '이', italian: 'questo/questa' },
+            { korean: '그', italian: 'quello/quella' },
+            { korean: '저', italian: 'quello lontano/quella lontana' },
+            
+            // Verbi comuni
+            { korean: '하다', italian: 'fare' },
+            { korean: '있다', italian: 'esserci, avere' },
+            { korean: '없다', italian: 'non esserci, non avere' },
+            { korean: '가다', italian: 'andare' },
+            { korean: '오다', italian: 'venire' },
+            { korean: '보다', italian: 'vedere, guardare' },
+            { korean: '먹다', italian: 'mangiare' },
+            { korean: '마시다', italian: 'bere' },
+            { korean: '자다', italian: 'dormire' },
+            { korean: '일어나다', italian: 'alzarsi' },
+            { korean: '앉다', italian: 'sedersi' },
+            { korean: '서다', italian: 'stare in piedi' },
+            { korean: '걷다', italian: 'camminare' },
+            { korean: '뛰다', italian: 'correre' },
+            { korean: '읽다', italian: 'leggere' },
+            { korean: '쓰다', italian: 'scrivere' },
+            { korean: '듣다', italian: 'sentire' },
+            { korean: '말하다', italian: 'dire, parlare' },
+            { korean: '알다', italian: 'sapere, conoscere' },
+            { korean: '모르다', italian: 'non sapere' },
+            { korean: '배우다', italian: 'imparare' },
+            { korean: '가르치다', italian: 'insegnare' },
+            { korean: '일하다', italian: 'lavorare' },
+            { korean: '공부하다', italian: 'studiare' },
+            { korean: '생각하다', italian: 'pensare' },
+            { korean: '좋아하다', italian: 'piacere' },
+            { korean: '싫어하다', italian: 'non piacere, odiare' },
+            { korean: '살다', italian: 'vivere' },
+            { korean: '죽다', italian: 'morire' },
+            { korean: '주다', italian: 'dare' },
+            { korean: '받다', italian: 'ricevere' },
+            { korean: '사다', italian: 'comprare' },
+            { korean: '팔다', italian: 'vendere' },
+            { korean: '만들다', italian: 'fare, creare' },
+            { korean: '타다', italian: 'prendere (mezzo di trasporto)' },
+            { korean: '입다', italian: 'indossare' },
+            { korean: '벗다', italian: 'togliersi (vestiti)' },
+            { korean: '씻다', italian: 'lavare' },
+            { korean: '닦다', italian: 'pulire' },
+            { korean: '찾다', italian: 'cercare' },
+            { korean: '찾아내다', italian: 'trovare' },
+            { korean: '기다리다', italian: 'aspettare' },
+            { korean: '만나다', italian: 'incontrare' },
+            { korean: '헤어지다', italian: 'separarsi' },
+            { korean: '결혼하다', italian: 'sposarsi' },
+            { korean: '사랑하다', italian: 'amare' },
+            { korean: '웃다', italian: 'ridere' },
+            { korean: '울다', italian: 'piangere' },
+            
+            // Aggettivi comuni
+            { korean: '크다', italian: 'essere grande' },
+            { korean: '작다', italian: 'essere piccolo' },
+            { korean: '높다', italian: 'essere alto' },
+            { korean: '낮다', italian: 'essere basso' },
+            { korean: '길다', italian: 'essere lungo' },
+            { korean: '짧다', italian: 'essere corto' },
+            { korean: '넓다', italian: 'essere largo' },
+            { korean: '좁다', italian: 'essere stretto' },
+            { korean: '좋다', italian: 'essere buono' },
+            { korean: '나쁘다', italian: 'essere cattivo' },
+            { korean: '새롭다', italian: 'essere nuovo' },
+            { korean: '오래되다', italian: 'essere vecchio' },
+            { korean: '젊다', italian: 'essere giovane' },
+            { korean: '늙다', italian: 'essere vecchio (età)' },
+            { korean: '빠르다', italian: 'essere veloce' },
+            { korean: '느리다', italian: 'essere lento' },
+            { korean: '쉽다', italian: 'essere facile' },
+            { korean: '어렵다', italian: 'essere difficile' },
+            { korean: '재미있다', italian: 'essere divertente' },
+            { korean: '재미없다', italian: 'essere noioso' },
+            { korean: '예쁘다', italian: 'essere bello (persone)' },
+            { korean: '아름답다', italian: 'essere bello' },
+            { korean: '못생기다', italian: 'essere brutto' },
+            { korean: '똑똑하다', italian: 'essere intelligente' },
+            { korean: '바보같다', italian: 'essere stupido' },
+            { korean: '친절하다', italian: 'essere gentile' },
+            { korean: '무섭다', italian: 'essere spaventoso' },
+            { korean: '춥다', italian: 'essere freddo' },
+            { korean: '따뜻하다', italian: 'essere caldo' },
+            { korean: '더럽다', italian: 'essere sporco' },
+            { korean: '깨끗하다', italian: 'essere pulito' },
+            
+            // Sostantivi - Famiglia
+            { korean: '가족', italian: 'famiglia' },
+            { korean: '부모님', italian: 'genitori' },
+            { korean: '아버지', italian: 'padre' },
+            { korean: '어머니', italian: 'madre' },
+            { korean: '아들', italian: 'figlio' },
+            { korean: '딸', italian: 'figlia' },
+            { korean: '형', italian: 'fratello maggiore (m)' },
+            { korean: '누나', italian: 'sorella maggiore (m)' },
+            { korean: '오빠', italian: 'fratello maggiore (f)' },
+            { korean: '언니', italian: 'sorella maggiore (f)' },
+            { korean: '동생', italian: 'fratello/sorella minore' },
+            { korean: '할아버지', italian: 'nonno' },
+            { korean: '할머니', italian: 'nonna' },
+            
+            // Sostantivi - Persone
+            { korean: '사람', italian: 'persona' },
+            { korean: '남자', italian: 'uomo' },
+            { korean: '여자', italian: 'donna' },
+            { korean: '아이', italian: 'bambino' },
+            { korean: '학생', italian: 'studente' },
+            { korean: '선생님', italian: 'insegnante' },
+            { korean: '의사', italian: 'medico' },
+            { korean: '간호사', italian: 'infermiera' },
+            { korean: '친구', italian: 'amico' },
+            { korean: '연인', italian: 'fidanzato/a' },
+            
+            // Sostantivi - Casa
+            { korean: '집', italian: 'casa' },
+            { korean: '방', italian: 'stanza' },
+            { korean: '부엌', italian: 'cucina' },
+            { korean: '화장실', italian: 'bagno' },
+            { korean: '거실', italian: 'soggiorno' },
+            { korean: '침실', italian: 'camera da letto' },
+            { korean: '문', italian: 'porta' },
+            { korean: '창문', italian: 'finestra' },
+            { korean: '벽', italian: 'parete' },
+            { korean: '바닥', italian: 'pavimento' },
+            { korean: '천장', italian: 'soffitto' },
+            { korean: '의자', italian: 'sedia' },
+            { korean: '탁자', italian: 'tavolo' },
+            { korean: '침대', italian: 'letto' },
+            
+            // Sostantivi - Cibo
+            { korean: '음식', italian: 'cibo' },
+            { korean: '밥', italian: 'riso, pasto' },
+            { korean: '빵', italian: 'pane' },
+            { korean: '물', italian: 'acqua' },
+            { korean: '우유', italian: 'latte' },
+            { korean: '커피', italian: 'caffè' },
+            { korean: '차', italian: 'tè' },
+            { korean: '맥주', italian: 'birra' },
+            { korean: '과일', italian: 'frutta' },
+            { korean: '사과', italian: 'mela' },
+            { korean: '바나나', italian: 'banana' },
+            { korean: '고기', italian: 'carne' },
+            { korean: '생선', italian: 'pesce' },
+            { korean: '야채', italian: 'verdura' },
+            
+            // Sostantivi - Trasporti
+            { korean: '차', italian: 'macchina' },
+            { korean: '버스', italian: 'autobus' },
+            { korean: '지하철', italian: 'metropolitana' },
+            { korean: '기차', italian: 'treno' },
+            { korean: '비행기', italian: 'aereo' },
+            { korean: '자전거', italian: 'bicicletta' },
+            
+            // Sostantivi - Luoghi
+            { korean: '학교', italian: 'scuola' },
+            { korean: '병원', italian: 'ospedale' },
+            { korean: '은행', italian: 'banca' },
+            { korean: '상점', italian: 'negozio' },
+            { korean: '시장', italian: 'mercato' },
+            { korean: '공원', italian: 'parco' },
+            { korean: '도서관', italian: 'biblioteca' },
+            { korean: '카페', italian: 'caffè (locale)' },
+            { korean: '식당', italian: 'ristorante' },
+            { korean: '회사', italian: 'azienda' },
+            
+            // Sostantivi - Tempo
+            { korean: '시간', italian: 'tempo, ora' },
+            { korean: '년', italian: 'anno' },
+            { korean: '월', italian: 'mese' },
+            { korean: '일', italian: 'giorno' },
+            { korean: '주', italian: 'settimana' },
+            { korean: '오늘', italian: 'oggi' },
+            { korean: '어제', italian: 'ieri' },
+            { korean: '내일', italian: 'domani' },
+            { korean: '아침', italian: 'mattina' },
+            { korean: '점심', italian: 'pranzo' },
+            { korean: '저녁', italian: 'sera, cena' },
+            { korean: '밤', italian: 'notte' },
+            
+            // Sostantivi - Corpo
+            { korean: '몸', italian: 'corpo' },
+            { korean: '머리', italian: 'testa' },
+            { korean: '얼굴', italian: 'viso' },
+            { korean: '눈', italian: 'occhio' },
+            { korean: '코', italian: 'naso' },
+            { korean: '입', italian: 'bocca' },
+            { korean: '귀', italian: 'orecchio' },
+            { korean: '손', italian: 'mano' },
+            { korean: '발', italian: 'piede' },
+            { korean: '다리', italian: 'gamba' },
+            { korean: '팔', italian: 'braccio' },
+            
+            // Sostantivi - Oggetti comuni
+            { korean: '책', italian: 'libro' },
+            { korean: '연필', italian: 'matita' },
+            { korean: '펜', italian: 'penna' },
+            { korean: '종이', italian: 'carta' },
+            { korean: '컴퓨터', italian: 'computer' },
+            { korean: '전화', italian: 'telefono' },
+            { korean: '시계', italian: 'orologio' },
+            { korean: '가방', italian: 'borsa' },
+            { korean: '옷', italian: 'vestiti' },
+            { korean: '신발', italian: 'scarpe' },
+            { korean: '돈', italian: 'soldi' },
+            { korean: '열쇠', italian: 'chiave' },
+            
+            // Sostantivi - Natura
+            { korean: '하늘', italian: 'cielo' },
+            { korean: '구름', italian: 'nuvola' },
+            { korean: '비', italian: 'pioggia' },
+            { korean: '눈', italian: 'neve' },
+            { korean: '바람', italian: 'vento' },
+            { korean: '태양', italian: 'sole' },
+            { korean: '달', italian: 'luna' },
+            { korean: '별', italian: 'stella' },
+            { korean: '바다', italian: 'mare' },
+            { korean: '산', italian: 'montagna' },
+            { korean: '강', italian: 'fiume' },
+            { korean: '나무', italian: 'albero' },
+            { korean: '꽃', italian: 'fiore' },
+            
+            // Avverbi comuni
+            { korean: '매우', italian: 'molto' },
+            { korean: '조금', italian: 'poco' },
+            { korean: '너무', italian: 'troppo' },
+            { korean: '정말', italian: 'davvero' },
+            { korean: '아주', italian: 'molto' },
+            { korean: '빨리', italian: 'velocemente' },
+            { korean: '천천히', italian: 'lentamente' },
+            { korean: '잘', italian: 'bene' },
+            { korean: '못', italian: 'male' },
+            { korean: '항상', italian: 'sempre' },
+            { korean: '가끔', italian: 'a volte' },
+            { korean: '자주', italian: 'spesso' },
+            { korean: '절대', italian: 'mai (con negazione)' },
+            
+            // Preposizioni e connettori
+            { korean: '그리고', italian: 'e' },
+            { korean: '하지만', italian: 'ma, però' },
+            { korean: '그래서', italian: 'quindi' },
+            { korean: '그런데', italian: 'però, a proposito' },
+            { korean: '또는', italian: 'oppure' },
+            { korean: '만약', italian: 'se' },
+            
+            // Espressioni utili
+            { korean: '안녕하세요', italian: 'ciao (formale)' },
+            { korean: '안녕', italian: 'ciao (informale)' },
+            { korean: '감사합니다', italian: 'grazie (formale)' },
+            { korean: '고맙습니다', italian: 'grazie' },
+            { korean: '죄송합니다', italian: 'scusi (formale)' },
+            { korean: '미안해요', italian: 'scusa' },
+            { korean: '괜찮아요', italian: 'va bene' },
+            { korean: '네', italian: 'sì (formale)' },
+            { korean: '아니요', italian: 'no (formale)' },
+            { korean: '안녕히 가세요', italian: 'arrivederci (a chi va)' },
+            { korean: '안녕히 계세요', italian: 'arrivederci (a chi resta)' }
+        ];
+
+        // Application state
+        let appState = {
+            currentTab: 'dashboard',
+            currentTopic: null,
+            currentExercise: 0,
+            userProgress: {
+                completed_topics: JSON.parse(localStorage.getItem('completed_topics') || '[]'),
+                topic_scores: JSON.parse(localStorage.getItem('topic_scores') || '{}'),
+                current_level: 'base'
+            },
+            isDarkMode: localStorage.getItem('darkMode') === 'true'
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            updateProgress();
+            renderTopics();
+            setupTranslator();
+            
+            if (appState.isDarkMode) {
+                document.body.classList.add('dark-mode');
+            }
+        });
+
+        function initializeApp() {
+            // Check if intermediate level should be unlocked
+            const baseTopics = grammarData.topics.filter(topic => topic.level === 'base');
+            const completedBase = appState.userProgress.completed_topics.filter(topic => {
+                return baseTopics.some(bt => bt.id === topic);
+            }).length;
+            
+            if (completedBase / baseTopics.length >= 0.8) {
+                appState.userProgress.current_level = 'intermediate';
+            }
+            
+            // Show achievements
+            checkAchievements();
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.remove('hidden');
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            appState.currentTab = tabName;
+            
+            // Reset topic view when switching tabs
+            if (tabName === 'topics') {
+                showTopicsList();
+            }
+        }
+
+        function updateProgress() {
+            const baseTopics = grammarData.topics.filter(topic => topic.level === 'base');
+            const intermediateTopics = grammarData.topics.filter(topic => topic.level === 'intermediate');
+            
+            const baseCompleted = appState.userProgress.completed_topics.filter(topic => {
+                return baseTopics.some(bt => bt.id === topic);
+            }).length;
+            
+            const intermediateCompleted = appState.userProgress.completed_topics.filter(topic => {
+                return intermediateTopics.some(it => it.id === topic);
+            }).length;
+            
+            const baseProgress = Math.round((baseCompleted / baseTopics.length) * 100);
+            const intermediateProgress = Math.round((intermediateCompleted / intermediateTopics.length) * 100);
+            
+            document.getElementById('base-progress').textContent = baseProgress + '%';
+            document.getElementById('base-progress-bar').style.width = baseProgress + '%';
+            
+            document.getElementById('intermediate-progress').textContent = intermediateProgress + '%';
+            document.getElementById('intermediate-progress-bar').style.width = intermediateProgress + '%';
+            
+            // Update recent activity
+            const recentActivity = document.getElementById('recent-activity');
+            if (appState.userProgress.completed_topics.length > 0) {
+                const lastCompleted = appState.userProgress.completed_topics[appState.userProgress.completed_topics.length - 1];
+                const lastTopic = grammarData.topics.find(t => t.id === lastCompleted);
+                recentActivity.innerHTML = `<p>Ultimo argomento completato: <strong>${lastTopic?.title || 'N/A'}</strong></p>`;
+            } else {
+                recentActivity.innerHTML = '<p>Inizia il tuo percorso di apprendimento!</p>';
+            }
+        }
+
+        function checkAchievements() {
+            const achievementArea = document.getElementById('achievement-area');
+            let achievements = [];
+            
+            const completedCount = appState.userProgress.completed_topics.length;
+            const baseTopics = grammarData.topics.filter(topic => topic.level === 'base');
+            const completedBase = appState.userProgress.completed_topics.filter(topic => {
+                return baseTopics.some(bt => bt.id === topic);
+            }).length;
+            
+            // First topic completed
+            if (completedCount === 1 && !localStorage.getItem('achievement_first')) {
+                achievements.push('🎉 Primo argomento completato! Ottimo inizio!');
+                localStorage.setItem('achievement_first', 'true');
+            }
+            
+            // All base topics completed
+            if (completedBase === baseTopics.length && !localStorage.getItem('achievement_base')) {
+                achievements.push('🏆 Livello Base completato! Ora puoi accedere al livello Intermedio!');
+                localStorage.setItem('achievement_base', 'true');
+            }
+            
+            // Half of all topics completed
+            if (completedCount >= grammarData.topics.length / 2 && !localStorage.getItem('achievement_half')) {
+                achievements.push('⭐ Hai completato metà del corso! Stai facendo grandi progressi!');
+                localStorage.setItem('achievement_half', 'true');
+            }
+            
+            achievements.forEach(achievement => {
+                const achievementDiv = document.createElement('div');
+                achievementDiv.className = 'achievement';
+                achievementDiv.textContent = achievement;
+                achievementArea.appendChild(achievementDiv);
+                
+                // Remove achievement after 5 seconds
+                setTimeout(() => {
+                    achievementDiv.remove();
+                }, 5000);
+            });
+        }
+
+        function renderTopics() {
+            const topicsGrid = document.getElementById('topics-grid');
+            topicsGrid.innerHTML = '';
+            
+            grammarData.topics.forEach(topic => {
+                const isCompleted = appState.userProgress.completed_topics.includes(topic.id);
+                const isLocked = !isTopicUnlocked(topic);
+                
+                const topicCard = document.createElement('div');
+                topicCard.className = `topic-card ${isCompleted ? 'completed' : ''} ${isLocked ? 'locked' : ''}`;
+                
+                if (!isLocked) {
+                    topicCard.onclick = () => showTopicDetail(topic.id);
+                }
+                
+                let statusIcon = '🔒';
+                let statusClass = 'locked';
+                if (isCompleted) {
+                    statusIcon = '✓';
+                    statusClass = 'completed';
+                } else if (!isLocked) {
+                    statusIcon = '▶';
+                    statusClass = 'available';
+                }
+                
+                topicCard.innerHTML = `
+                    <div class="topic-header">
+                        <div class="topic-title">${topic.title}</div>
+                        <div class="topic-status ${statusClass}">${statusIcon}</div>
+                    </div>
+                    <div class="topic-description">${topic.description}</div>
+                    <div class="level-badge">${topic.level === 'base' ? 'Base' : 'Intermedio'}</div>
+                `;
+                
+                topicsGrid.appendChild(topicCard);
+            });
+        }
+
+        function isTopicUnlocked(topic) {
+            if (topic.level === 'base') {
+                if (!topic.unlock_requirement) return true;
+                return appState.userProgress.completed_topics.includes(topic.unlock_requirement);
+            } else {
+                // Intermediate topics unlock when 80% of base is completed
+                const baseTopics = grammarData.topics.filter(t => t.level === 'base');
+                const completedBase = appState.userProgress.completed_topics.filter(topicId => {
+                    return baseTopics.some(bt => bt.id === topicId);
+                }).length;
+                
+                if (completedBase / baseTopics.length >= 0.8) {
+                    if (!topic.unlock_requirement) return true;
+                    return appState.userProgress.completed_topics.includes(topic.unlock_requirement);
+                }
+                return false;
+            }
+        }
+
+        function showTopicDetail(topicId) {
+            const topic = grammarData.topics.find(t => t.id === topicId);
+            if (!topic) return;
+            
+            appState.currentTopic = topic;
+            appState.currentExercise = 0;
+            
+            document.getElementById('topics-view').classList.add('hidden');
+            document.getElementById('topic-detail').classList.remove('hidden');
+            
+            renderTopicContent();
+        }
+
+        function showTopicsList() {
+            document.getElementById('topic-detail').classList.add('hidden');
+            document.getElementById('topics-view').classList.remove('hidden');
+            appState.currentTopic = null;
+        }
+
+        function renderTopicContent() {
+            const topic = appState.currentTopic;
+            const topicContent = document.getElementById('topic-content');
+            
+            topicContent.innerHTML = `
+                <div class="topic-content">
+                    <h1>${topic.title}</h1>
+                    <div class="level-badge">${topic.level === 'base' ? 'Livello Base' : 'Livello Intermedio'}</div>
+                    
+                    <div class="content-section">
+                        <h3>📚 Spiegazione</h3>
+                        <p>${topic.content.explanation.replace(/\n/g, '</p><p>')}</p>
+                    </div>
+                    
+                    <div class="content-section">
+                        <h3>💡 Esempi</h3>
+                        ${topic.content.examples.map(example => `
+                            <div class="example">
+                                <div class="korean">${example.korean}</div>
+                                <div class="translation">${example.translation}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="content-section">
+                        <h3>⚠️ Errori comuni</h3>
+                        <ul>
+                            ${topic.content.common_mistakes.map(mistake => `<li>${mistake}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            renderQuiz();
+        }
+
+        function renderQuiz() {
+            const topic = appState.currentTopic;
+            const quizSection = document.getElementById('quiz-section');
+            
+            if (!topic.exercises || topic.exercises.length === 0) {
+                quizSection.innerHTML = `
+                    <div class="quiz-container">
+                        <h3>🎯 Completa l'argomento</h3>
+                        <p>Hai studiato il contenuto teorico. Clicca su "Completa" per segnare questo argomento come completato.</p>
+                        <div class="quiz-actions">
+                            <button class="btn" onclick="completeTopicWithoutQuiz()">Completa Argomento</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const exercise = topic.exercises[appState.currentExercise];
+            const isCompleted = appState.userProgress.completed_topics.includes(topic.id);
+            
+            quizSection.innerHTML = `
+                <div class="quiz-container">
+                    <h3>🎯 Quiz - Domanda ${appState.currentExercise + 1} di ${topic.exercises.length}</h3>
+                    
+                    <div class="question">${exercise.question}</div>
+                    
+                    <div class="options" id="quiz-options">
+                        ${exercise.options.map((option, index) => `
+                            <div class="option" onclick="selectOption(${index})" data-index="${index}">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="quiz-actions">
+                        <button class="btn secondary" onclick="showTopicsList()">← Torna agli argomenti</button>
+                        <button class="btn" id="check-answer" onclick="checkAnswer()" disabled>Verifica Risposta</button>
+                        ${appState.currentExercise < topic.exercises.length - 1 ? 
+                            '<button class="btn hidden" id="next-question" onclick="nextQuestion()">Prossima Domanda</button>' :
+                            '<button class="btn hidden" id="complete-topic" onclick="completeTopic()">Completa Argomento</button>'
+                        }
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectOption(index) {
+            // Remove previous selections
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Select current option
+            document.querySelector(`[data-index="${index}"]`).classList.add('selected');
+            document.getElementById('check-answer').disabled = false;
+        }
+
+        function checkAnswer() {
+            const topic = appState.currentTopic;
+            const exercise = topic.exercises[appState.currentExercise];
+            const selectedOption = document.querySelector('.option.selected');
+            
+            if (!selectedOption) return;
+            
+            const selectedIndex = parseInt(selectedOption.dataset.index);
+            const isCorrect = selectedIndex === exercise.correct;
+            
+            // Show correct/incorrect styling
+            document.querySelectorAll('.option').forEach((opt, index) => {
+                if (index === exercise.correct) {
+                    opt.classList.add('correct');
+                } else if (index === selectedIndex && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+                opt.onclick = null; // Disable further clicks
+            });
+            
+            // Hide check button, show next/complete button
+            document.getElementById('check-answer').classList.add('hidden');
+            const nextBtn = document.getElementById('next-question') || document.getElementById('complete-topic');
+            nextBtn.classList.remove('hidden');
+            
+            // Store answer result
+            if (!appState.userProgress.topic_scores[topic.id]) {
+                appState.userProgress.topic_scores[topic.id] = [];
+            }
+            appState.userProgress.topic_scores[topic.id][appState.currentExercise] = isCorrect;
+        }
+
+        function nextQuestion() {
+            appState.currentExercise++;
+            renderQuiz();
+        }
+
+        function completeTopic() {
+            const topic = appState.currentTopic;
+            
+            // Calculate score
+            const scores = appState.userProgress.topic_scores[topic.id] || [];
+            const correctAnswers = scores.filter(score => score).length;
+            const totalQuestions = topic.exercises.length;
+            const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+            
+            // Mark as completed if score >= 70%
+            if (percentage >= 70 && !appState.userProgress.completed_topics.includes(topic.id)) {
+                appState.userProgress.completed_topics.push(topic.id);
+                saveProgress();
+                updateProgress();
+                renderTopics();
+                checkAchievements();
+                
+                alert(`🎉 Argomento completato! Punteggio: ${percentage}%`);
+            } else if (percentage < 70) {
+                alert(`📚 Punteggio: ${percentage}%. Serve almeno 70% per completare l'argomento. Riprova!`);
+                appState.currentExercise = 0;
+                renderQuiz();
+                return;
+            } else {
+                alert(`✅ Argomento già completato! Punteggio attuale: ${percentage}%`);
+            }
+            
+            showTopicsList();
+        }
+
+        function completeTopicWithoutQuiz() {
+            const topic = appState.currentTopic;
+            
+            if (!appState.userProgress.completed_topics.includes(topic.id)) {
+                appState.userProgress.completed_topics.push(topic.id);
+                saveProgress();
+                updateProgress();
+                renderTopics();
+                checkAchievements();
+                
+                alert(`🎉 Argomento "${topic.title}" completato!`);
+            }
+            
+            showTopicsList();
+        }
+
+        function saveProgress() {
+            localStorage.setItem('completed_topics', JSON.stringify(appState.userProgress.completed_topics));
+            localStorage.setItem('topic_scores', JSON.stringify(appState.userProgress.topic_scores));
+        }
+
+        function setupTranslator() {
+            const searchItalian = document.getElementById('search-italian');
+            const searchKorean = document.getElementById('search-korean');
+            const italianResults = document.getElementById('italian-results');
+            const koreanResults = document.getElementById('korean-results');
+            
+            function displayWords(words, container) {
+                container.innerHTML = words.slice(0, 20).map(word => `
+                    <div class="word-item">
+                        <div class="word-korean">${word.korean}</div>
+                        <div class="word-italian">${word.italian}</div>
+                    </div>
+                `).join('');
+            }
+            
+            // Initial display - show first 20 words
+            displayWords(koreanWords, italianResults);
+            displayWords(koreanWords, koreanResults);
+            
+            searchItalian.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                if (query === '') {
+                    displayWords(koreanWords, italianResults);
+                    return;
+                }
+                
+                const filtered = koreanWords.filter(word => 
+                    word.italian.toLowerCase().includes(query)
+                );
+                displayWords(filtered, italianResults);
+            });
+            
+            searchKorean.addEventListener('input', function() {
+                const query = this.value.trim();
+                if (query === '') {
+                    displayWords(koreanWords, koreanResults);
+                    return;
+                }
+                
+                const filtered = koreanWords.filter(word => 
+                    word.korean.includes(query)
+                );
+                displayWords(filtered, koreanResults);
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            appState.isDarkMode = !appState.isDarkMode;
+            localStorage.setItem('darkMode', appState.isDarkMode.toString());
+            
+            const themeBtn = document.querySelector('.theme-toggle');
+            themeBtn.textContent = appState.isDarkMode ? '☀️' : '🌙';
+        }
+
+        // Service Worker registration for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                const swCode = `
+                    const CACHE_NAME = 'korean-grammar-v1';
+                    const urlsToCache = [
+                        '/',
+                        '/index.html'
+                    ];
+
+                    self.addEventListener('install', function(event) {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then(function(cache) {
+                                    return cache.addAll(urlsToCache);
+                                })
+                        );
+                    });
+
+                    self.addEventListener('fetch', function(event) {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then(function(response) {
+                                    if (response) {
+                                        return response;
+                                    }
+                                    return fetch(event.request);
+                                })
+                        );
+                    });
+                `;
+                
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+                
+                navigator.serviceWorker.register(swUrl)
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed');
+                    });
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch(event.key) {
+                    case '1':
+                        event.preventDefault();
+                        showTab('dashboard');
+                        break;
+                    case '2':
+                        event.preventDefault();
+                        showTab('topics');
+                        break;
+                    case '3':
+                        event.preventDefault();
+                        showTab('translator');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

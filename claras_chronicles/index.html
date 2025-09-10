@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clara's Chronicles - Companion App</title>
+
+  <!-- Manifest -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#111111">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Times New Roman, serif;
+      background-color: #111;
+      color: #f1f1f1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      font-size: 16px;
+    }
+    header {
+      text-align: center;
+      padding: 1rem;
+      border-bottom: 1px solid #333;
+    }
+    header img {
+      max-width: 80px;
+      border-radius: 10px;
+    }
+    h1 {
+      margin: 0.5rem 0;
+      font-size: 1.5rem;
+    }
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 600px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    section {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    section h2 {
+      margin-top: 0;
+      color: #e63946;
+      font-size: 1.2rem;
+    }
+    button {
+      background: #e63946;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      margin-right: 0.5rem;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #c52834;
+    }
+    input, textarea {
+      width: 97%;
+      padding: 0.6rem;
+      margin: 0.3rem 0 0.8rem 0;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background: #222;
+      color: white;
+      font-size: 1rem;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      color: #f1f1f1;
+      margin-top: 0.5rem;
+    }
+    .divider {
+      border-top: 1px solid #e63946;
+      margin: 1rem 0;
+    }
+    .note-entry {
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .note-entry h3 {
+      margin: 0;
+      font-size: 1rem;
+      color: #e63946;
+    }
+    .note-entry small {
+      color: #aaa;
+    }
+    .note-entry button {
+      margin-top: 0.3rem;
+      margin-right: 0.3rem;
+      font-size: 0.9rem;
+    }
+
+    /* Mobile-friendly grid per armi e danno */
+    .arma-riga {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .arma-riga input {
+      flex: 1 1 48%;
+    }
+
+    /* Stile per pulsanti debug */
+    .debug-button {
+      background: #666;
+      font-size: 0.8rem;
+      padding: 0.4rem 0.8rem;
+    }
+    .debug-button:hover {
+      background: #555;
+    }
+
+    @media (max-width: 480px) {
+      main {
+        padding: 0.5rem;
+      }
+      input, textarea, button {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo Pipistrello">
+    <h1>Clara's Chronicles</h1>
+    <p>Companion App per le tue sessioni di gioco</p>
+  </header>
+
+  <main>
+    <!-- Scheda del personaggio -->
+    <section>
+      
+     <p><a href="https://bakemonolab.it/gdr/scheda_p.pdf" target="_blank" style="color:#e63946;"><div style="text-align: center;">🔥 Scarica scheda dell'Ordine in pdf e stampala.</a></p><p>Oppure usa quella qui sotto direttamente sul tuo dispositivo</div></p>
+     <br>
+     <div class="divider"></div>
+    <div style="text-align: center;"> <h2>Scheda del personaggio - Ordine della Verbena</h2></div> 
+    <div class="divider"></div>
+      <form id="character-form">
+
+        <!-- SEZIONE 1 -->
+          <label>Nome del Giocatore</label>
+        <input type="text" name="giocatore">
+        <label>Data dell'incarico</label>
+        <input type="date" name="data">
+        <label>Nome del personaggio</label>
+        <input type="text" name="personaggio">
+        <label>Età</label>
+        <input type="number" name="eta">
+        <label>Professione</label>
+        <input type="text" name="professione">
+        <label>Nazionalità</label>
+        <input type="text" name="nazionalita">
+        <label>Lingua Madre</label>
+        <input type="text" name="linguaMadre">
+        <label>Seconda Lingua</label>
+        <input type="text" name="secondaLingua">
+        <label>Descrizione del personaggio</label>
+        <textarea name="descrizione" rows="4"></textarea>
+
+        <div class="divider"></div>
+       
+
+        <!-- SEZIONE 2 -->
+        <label>Punti Cacciatore</label>
+        <input type="number" name="puntiGioco">
+        <label>Esperienza Vampira Iniziale</label>
+        <input type="number" name="expIniziale">
+        <label>Esperienza Vampira Residua durante la sessione</label>
+        <input type="number" name="expResidua">
+
+        <div class="divider"></div>
+
+        <!-- SEZIONE 3 -->
+        <label>Vigore</label>
+        <input type="number" name="vigore">
+        <label>Prontezza</label>
+        <input type="number" name="prontezza">
+        <label>Carisma</label>
+        <input type="number" name="carisma">
+        <label>Intuito</label>
+        <input type="number" name="intuito">
+
+        <div class="divider"></div>
+
+        <!-- SEZIONE 4 -->
+        <label>Armi da Fuoco</label>
+        <input type="number" name="armiFuoco">
+        <label>Armi da Taglio</label>
+        <input type="number" name="armiTaglio">
+        <label>Bombe</label>
+        <input type="number" name="bombe">
+
+        <div class="divider"></div>
+
+        <!-- SEZIONE 5 -->
+        <label>Rissa</label>
+        <input type="number" name="rissa">
+        <label>Resistenza</label>
+        <input type="number" name="resistenza">
+
+        <div class="divider"></div>
+
+        <!-- SEZIONE 6 – Armi con danno -->
+        <div class="arma-riga">
+          <label>Arma 1</label>
+          <input type="text" name="arma1Nome" placeholder="Nome arma">
+          <input type="number" name="arma1Danno" placeholder="Danno">
+        </div>
+        <div class="arma-riga">
+          <label>Arma 2</label>
+          <input type="text" name="arma2Nome" placeholder="Nome arma">
+          <input type="number" name="arma2Danno" placeholder="Danno">
+        </div>
+        <div class="arma-riga">
+          <label>Arma 3</label>
+          <input type="text" name="arma3Nome" placeholder="Nome arma">
+          <input type="number" name="arma3Danno" placeholder="Danno">
+        </div>
+        <div class="arma-riga">
+          <label>Arma 4</label>
+          <input type="text" name="arma4Nome" placeholder="Nome arma">
+          <input type="number" name="arma4Danno" placeholder="Danno">
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- SEZIONE 7 – Equipaggiamento -->
+        <label>Equipaggiamento</label>
+        <textarea name="equipaggiamento" rows="4"></textarea>
+
+        <div class="divider"></div>
+
+        <!-- SEZIONE 8 – Indizi e Informazioni -->
+        <label>Indizi</label>
+        <textarea name="indizi" rows="3"></textarea>
+        <label>Informazioni</label>
+        <textarea name="informazioni" rows="3"></textarea>
+
+        <div class="divider"></div>
+
+        <!-- Pulsanti Scheda -->
+        <button type="button" onclick="saveCharacter()">💾 Salva Scheda</button>
+        <button type="button" onclick="loadCharacter()">📂 Carica Scheda</button>
+        <button type="button" onclick="clearCharacter()">🗑️ Cancella Scheda</button>
+        
+        <!-- Pulsanti Debug (commentati per uso futuro)
+        <br><br>
+        <button type="button" class="debug-button" onclick="testLocalStorage()">🔍 Test Debug</button>
+        <button type="button" class="debug-button" onclick="showSavedData()">📋 Mostra Dati</button>
+        -->
+      </form>
+    </section>
+
+    <!-- Dice roller -->
+    <section>
+      <h2>Lancio Dadi</h2>
+      <label for="dice-count">Numero di dadi (1-10):</label>
+      <input type="number" id="dice-count" min="1" max="10" value="1">
+      <button onclick="rollDice()">Lancia</button>
+      <div id="dice-result"></div>
+    </section>
+
+    <!-- Block Notes -->
+    <section>
+      <h2>Block Notes</h2>
+      <label for="session-name">Nome Sessione:</label>
+      <input type="text" id="session-name" placeholder="Es. Campagna Roma 1889">
+      <label for="session-date">Data:</label>
+      <input type="date" id="session-date">
+      <label for="session-notes">Appunti:</label>
+      <textarea id="session-notes" rows="5" placeholder="Scrivi i tuoi appunti..."></textarea>
+      <button onclick="saveNote()">Salva Appunti</button>
+      <div id="notes-list"></div>
+    </section>
+  </main>
+
+  <script>
+    // Service worker registration
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js").then(() => {
+        console.log("Service Worker registrato");
+      });
+    }
+
+    // Dice roller
+    function rollDice() {
+      const count = Math.min(Math.max(parseInt(document.getElementById('dice-count').value),1),10);
+      const rolls = [];
+      for (let i = 0; i < count; i++) {
+        rolls.push(Math.floor(Math.random() * 6) + 1);
+      }
+      document.getElementById('dice-result').innerText = 
+        "Risultati: " + rolls.join(", ") + " (Totale: " + rolls.reduce((a,b)=>a+b,0) + ")";
+    }
+
+    // Notes system
+    function loadNotes() {
+      const notesList = document.getElementById('notes-list');
+      notesList.innerHTML = "";
+      const notes = JSON.parse(localStorage.getItem("claraNotes") || "[]");
+      notes.forEach((note, index) => {
+        const div = document.createElement("div");
+        div.className = "note-entry";
+        div.innerHTML = `
+          <h3>${note.name}</h3>
+          <small>${note.date}</small>
+          <p>${note.text}</p>
+          <button onclick="editNote(${index})">Modifica</button>
+          <button onclick="deleteNote(${index})">Elimina</button>
+        `;
+        notesList.appendChild(div);
+      });
+    }
+
+    function saveNote() {
+      const name = document.getElementById("session-name").value.trim();
+      const date = document.getElementById("session-date").value;
+      const text = document.getElementById("session-notes").value.trim();
+
+      if (!name || !date || !text) {
+        alert("Compila tutti i campi prima di salvare!");
+        return;
+      }
+
+      const notes = JSON.parse(localStorage.getItem("claraNotes") || "[]");
+      notes.push({name, date, text});
+      localStorage.setItem("claraNotes", JSON.stringify(notes));
+
+      document.getElementById("session-name").value = "";
+      document.getElementById("session-date").value = "";
+      document.getElementById("session-notes").value = "";
+
+      loadNotes();
+    }
+
+    function editNote(index) {
+      const notes = JSON.parse(localStorage.getItem("claraNotes") || "[]");
+      const note = notes[index];
+      document.getElementById("session-name").value = note.name;
+      document.getElementById("session-date").value = note.date;
+      document.getElementById("session-notes").value = note.text;
+      notes.splice(index,1);
+      localStorage.setItem("claraNotes", JSON.stringify(notes));
+      loadNotes();
+    }
+
+    function deleteNote(index) {
+      const notes = JSON.parse(localStorage.getItem("claraNotes") || "[]");
+      notes.splice(index,1);
+      localStorage.setItem("claraNotes", JSON.stringify(notes));
+      loadNotes();
+    }
+
+    // Character sheet functions
+    function saveCharacter() {
+      console.log("🔵 Inizio salvataggio scheda...");
+      
+      const form = document.getElementById("character-form");
+      const data = {};
+      
+      // Raccogli tutti i dati dai campi del form
+      Array.from(form.elements).forEach(el => {
+        if (el.name && el.type !== 'button') {
+          data[el.name] = el.value;
+          if (el.value) {
+            console.log(`Campo ${el.name}: ${el.value}`);
+          }
+        }
+      });
+      
+      // Salva nel localStorage
+      localStorage.setItem("claraCharacter", JSON.stringify(data));
+      
+      // Debug: mostra cosa è stato salvato
+      console.log("✅ Dati salvati:", data);
+      console.log("📊 Numero di campi salvati:", Object.keys(data).length);
+      
+      // Verifica che sia stato salvato
+      const verificaSalvataggio = localStorage.getItem("claraCharacter");
+      console.log("🔍 Verifica salvataggio:", verificaSalvataggio ? "OK" : "ERRORE");
+      
+      // Mostra un messaggio di conferma
+      alert("Scheda salvata con successo! 💾\nCampi salvati: " + Object.keys(data).length);
+    }
+
+    function loadCharacter() {
+      console.log("🔵 Inizio caricamento scheda...");
+      
+      const savedData = localStorage.getItem("claraCharacter");
+      console.log("🔍 Dati nel localStorage:", savedData);
+      
+      if (!savedData) {
+        alert("Nessuna scheda salvata trovata!");
+        console.log("❌ Nessun dato trovato");
+        return;
+      }
+      
+      try {
+        const data = JSON.parse(savedData);
+        console.log("📋 Dati da caricare:", data);
+        
+        const form = document.getElementById("character-form");
+        let campiCaricati = 0;
+        
+        // Compila tutti i campi con i dati salvati
+        Array.from(form.elements).forEach(el => {
+          if (el.name && el.type !== 'button' && data[el.name] !== undefined) {
+            el.value = data[el.name];
+            if (data[el.name]) {
+              campiCaricati++;
+              console.log(`✅ Caricato ${el.name}: ${data[el.name]}`);
+            }
+          }
+        });
+        
+        console.log("📊 Campi caricati:", campiCaricati);
+        alert("Scheda caricata con successo! 📂\nCampi caricati: " + campiCaricati);
+        
+      } catch (error) {
+        console.error("❌ Errore nel caricamento:", error);
+        alert("Errore nel caricamento della scheda!");
+      }
+    }
+
+    function clearCharacter() {
+      if (confirm("Sei sicuro di voler resettare tutti i dati della scheda?")) {
+        const form = document.getElementById("character-form");
+        form.reset();
+        
+        // Rimuovi anche i dati salvati
+        localStorage.removeItem("claraCharacter");
+        console.log("🗑️ Scheda e dati salvati eliminati");
+        
+        alert("Scheda resettata! 🗑️");
+      }
+    }
+
+    function autoLoadCharacter() {
+      console.log("🔵 Caricamento automatico...");
+      
+      const savedData = localStorage.getItem("claraCharacter");
+      console.log("🔍 Caricamento automatico - Dati:", savedData ? "Trovati" : "Non trovati");
+      
+      if (savedData) {
+        try {
+          const data = JSON.parse(savedData);
+          const form = document.getElementById("character-form");
+          let campiCaricati = 0;
+          
+          Array.from(form.elements).forEach(el => {
+            if (el.name && el.type !== 'button' && data[el.name] !== undefined && data[el.name] !== '') {
+              el.value = data[el.name];
+              campiCaricati++;
+            }
+          });
+          
+          if (campiCaricati > 0) {
+            console.log("✅ Scheda caricata automaticamente:", campiCaricati, "campi");
+          }
+          
+        } catch (error) {
+          console.error("❌ Errore nel caricamento automatico:", error);
+        }
+      }
+    }
+
+    // Funzioni di debug
+    function testLocalStorage() {
+      console.log("🔍 === TEST LOCALSTORAGE ===");
+      console.log("Supportato:", typeof(Storage) !== "undefined");
+      console.log("Dati scheda:", localStorage.getItem("claraCharacter"));
+      console.log("Dati note:", localStorage.getItem("claraNotes"));
+      console.log("Totale elementi nel localStorage:", localStorage.length);
+      
+      alert("Test completato! Controlla la console (F12) per i dettagli.");
+    }
+
+    function showSavedData() {
+      const savedData = localStorage.getItem("claraCharacter");
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        let messaggio = "Dati salvati:\n\n";
+        for (let campo in data) {
+          if (data[campo]) {
+            messaggio += campo + ": " + data[campo] + "\n";
+          }
+        }
+        alert(messaggio);
+      } else {
+        alert("Nessun dato salvato!");
+      }
+    }
+
+    // Inizializzazione quando la pagina è pronta
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log("🟢 DOMContentLoaded - Inizializzazione app");
+      autoLoadCharacter();
+      loadNotes();
+    });
+
+    // Backup: se DOMContentLoaded non funziona
+    window.addEventListener('load', function() {
+      console.log("🟡 Window load - Inizializzazione backup");
+      autoLoadCharacter();
+      loadNotes();
+    });
+
+    // Ulteriore backup con timeout
+    setTimeout(function() {
+      console.log("🟠 Timeout backup - Inizializzazione");
+      autoLoadCharacter();
+      if (typeof loadNotes === 'function') {
+        loadNotes();
+      }
+    }, 1000);
+
+    // Log di avvio
+    console.log("🚀 Clara's Chronicles - App avviata!");
+    
+     init();
+  if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(() => console.log('SW registrato'))
+    .catch(err => console.error('SW errore:', err));
+}
+  </script>
+</body>
+</html>

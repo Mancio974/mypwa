@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<!-- Ogni volta che crei una nuova app: Crei la cartella con dentro i file PWA.
+Aggiungi una voce nell’array apps (titolo, descrizione, immagine, link).
+Metti l’immagine anteprima accanto a index.html o in una cartella tipo assets/. -->
+
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPWA</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: #121212;
+      color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 1.2rem;
+      background: #1f1f1f;
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .card {
+      background: #1c1c1c;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.7);
+    }
+
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 1rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      color: #ffffff;
+    }
+
+    .card p {
+      flex: 1;
+      font-size: 0.95rem;
+      color: #bbbbbb;
+      margin: 0 0 1rem;
+    }
+
+    .card a {
+      text-align: center;
+      text-decoration: none;
+      background: #3a86ff;
+      color: #fff;
+      padding: 0.6rem;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .card a:hover {
+      background: #1d6fe0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #1f1f1f;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>MyPWA Showcase</header>
+  <main id="appGrid"></main>
+  <footer>© 2025 - MyPWA Showcase</footer>
+
+  <script>
+    // Array con le tue app: basta aggiungerne una nuova qui
+    const apps = [
+      {
+        title: "Wim Hof App",
+        description: "Gestisci la tua respirazione Wim Hof.",
+        image: "./assets/wha.png", // immagine anteprima (mettila nella root o in assets)
+        link: "./webapp_wimh/index.html" // cartella della PWA
+      },
+      {
+        title: "MyAgenda App",
+        description: "Agenda Editoriale per gestire appuntamenti e contatti",
+        image: "./assets/agenda.png",
+        link: "./my_new_agenda/index.html"
+      },
+      {
+        title: "Clara's Chronicles App",
+        description: "Companion App per il GDR Clara's Chronicles.",
+        image: "./assets/clara.png",
+        link: "./claras_chronicles/index.html"
+      },
+      {
+        title: "My Book Fair",
+        description: "Gestisci le tue fiere del libro con vendite e report.",
+        image: "./assets/fair.png", // immagine anteprima (mettila nella root o in assets)
+        link: "./my_new_book_fair/index.html" // cartella della PWA
+      },
+        {
+        title: "Korean grammar",
+        description: "Impara ed esercitati con la lingua coreana.",
+        image: "./assets/korean.png", // immagine anteprima (mettila nella root o in assets)
+        link: "./grammar/index.html" // cartella della PWA
+      },
+    ];
+
+    const appGrid = document.getElementById("appGrid");
+
+    apps.forEach(app => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <img src="${app.image}" alt="${app.title}">
+        <div class="card-content">
+          <h3>${app.title}</h3>
+          <p>${app.description}</p>
+          <a href="${app.link}">Apri</a>
+        </div>
+      `;
+      appGrid.appendChild(card);
+    });
+  </script>
+</body>
+</html>
+

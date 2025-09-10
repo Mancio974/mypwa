@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Agenda Editoriale</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#024554">
+  <style>
+    /* Dark elegant theme using provided palette */
+    :root{
+      --bg:#071617; /* deep dark */
+      --panel:#0b2626;
+      --muted:#C2C0A6;
+      --accent:#024554; /* primary */
+      --accent-2:#53736A;
+      --accent-3:#6A8C69;
+      --accent-4:#A8B545;
+      --soft:#C2C0A6;
+      --glass: rgba(255,255,255,0.03);
+      --card-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      --text:#E6EFEA;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#031213);color:var(--text);font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
+    header{display:flex;align-items:center;gap:16px;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.04);background:linear-gradient(90deg,rgba(2,69,84,0.08),transparent)}
+    header h1{margin:0;font-size:20px;color:var(--muted)}
+    .container{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 72px)}
+    nav{padding:18px;background:var(--panel);border-right:1px solid rgba(255,255,255,0.03)}
+    nav .brand{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    nav .brand .logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:700}
+    nav .menu{display:flex;flex-direction:column;gap:8px}
+    nav button{background:transparent;border:0;color:var(--soft);padding:10px;border-radius:8px;text-align:left;cursor:pointer}
+    nav button.active{background:linear-gradient(90deg, rgba(168,181,69,0.08), rgba(83,115,106,0.03));box-shadow:var(--card-shadow)}
+    main{padding:18px}
+    .card{background:var(--glass);border-radius:12px;padding:14px;box-shadow:var(--card-shadow);margin-bottom:14px}
+
+    /* top bar actions */
+    .top-actions{display:flex;gap:10px;align-items:center}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;color:var(--muted);cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,var(--accent-2),var(--accent-3));border:0;color:#071616}
+
+    /* layout for sections */
+    .grid-2{display:grid;grid-template-columns:1fr 420px;gap:12px}
+
+    /* calendar styles */
+    .calendar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    .day{background:rgba(255,255,255,0.02);min-height:80px;padding:6px;border-radius:8px;position:relative}
+    .day .date{position:absolute;top:6px;right:8px;font-size:12px;color:var(--muted)}
+    .day .dots{display:flex;flex-direction:column;gap:4px;margin-top:24px}
+    .pill{display:inline-block;padding:6px 8px;border-radius:6px;font-size:12px;color:#071616}
+    .pill.event{background:#6A8C69}
+    .pill.app{background:#B8D84A}
+
+    /* list & archive */
+    .list{display:flex;flex-direction:column;gap:8px}
+    .list .item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02)}
+    .meta{font-size:12px;color:var(--muted)}
+
+    /* contacts */
+    .contacts-list{display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow:auto;padding-right:6px}
+    .contact-row{display:flex;justify-content:space-between;gap:8px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02)}
+    .tags{display:flex;gap:6px;flex-wrap:wrap}
+    .tag{padding:4px 6px;border-radius:6px;background:rgba(255,255,255,0.03);font-size:12px}
+
+    /* notes */
+    .notes-list{display:flex;flex-direction:column;gap:8px}
+    textarea{width:100%;padding:10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--text);min-height:100px}
+
+    /* forms */
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+    input,select{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)}
+
+    footer{padding:12px;color:var(--muted);font-size:13px;text-align:center}
+
+    @media (max-width:900px){.container{grid-template-columns:1fr} .grid-2{grid-template-columns:1fr} nav{display:none}}
+    .day-header {
+  background: var(--accent-2);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+  padding: 8px 4px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Modifica il grid del calendario per includere gli header */
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  grid-auto-rows: max-content;
+}
+  </style>
+</head>
+<body>
+  <header>
+    
+    <h1 id="homeTitle" style="cursor:pointer">myAE</h1>
+    <div style="flex:1"></div>
+    <div class="top-actions">
+  <button id="notesBtn" class="btn">Note</button>
+  <button id="contactsBtn" class="btn">Cont</button>
+  <button id="importBtn" class="btn">Ix</button>
+  <button id="exportBtn" class="btn">Ex</button>
+  <button id="clearExpired" class="btn">Arc</button>
+</div>
+  </header>
+
+  <div class="container">
+    <nav>
+      <div class="brand">
+        <div class="logo">AE</div>
+        <div style="line-height:1">
+          <div style="font-weight:600">Agenda Editoriale</div>
+          <div style="font-size:12px;color:var(--muted)">PWA locale per consulenti editoriali</div>
+        </div>
+      </div>
+      <div class="menu">
+        <button id="tabCal" class="active">Calendario & Eventi</button>
+        <button id="tabContacts">Contatti</button>
+        <button id="tabNotes">Note</button>
+      </div>
+    </nav>
+
+    <main>
+      <!-- Calendar Section -->
+      <section id="section-cal" class="card">
+        <div class="calendar-header">
+          <div style="display:flex;align-items:center;gap:10px">
+            <button id="prevMonth" class="btn">◀</button>
+            <div id="monthLabel" style="font-weight:600"></div>
+            <button id="nextMonth" class="btn">▶</button>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+           <!-- <button id="newEventBtn" class="btn primary">Nuovo evento/appuntamento</button> -->
+            <select id="viewSelect" class="btn">
+              <option value="month">Vista mensile</option>
+              <option value="list">Lista cronologica</option>
+              <option value="archive">Archivio</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="calendarArea">
+          <!-- month grid inserted here -->
+          <div id="monthGrid" class="month-grid"></div>
+        </div>
+
+        <div id="listArea" style="display:none;margin-top:12px">
+          <div class="list" id="upcomingList"></div>
+        </div>
+
+        <div id="archiveArea" style="display:none;margin-top:12px">
+          <div id="archiveGroups"></div>
+        </div>
+      </section>
+
+      <!-- Right column: quick form + contacts preview -->
+      <div class="grid-2" style="margin-top:12px">
+        <div class="card">
+          <div style="font-weight:700;margin-bottom:8px">Aggiungi o Modifica Evento/Appuntamento</div>
+          <form id="eventForm">
+            <label>Titolo</label>
+            <input id="evTitle" required />
+            <label>Data e ora</label>
+            <input id="evDate" type="datetime-local" min="2025-01-01T00:00" required />
+            <label>Tipo</label>
+            <select id="evType">
+              <option value="event">Evento</option>
+              <option value="appointment">Appuntamento</option>
+            </select>
+            <label>Note</label>
+            <input id="evNote" />
+           <div style="display:flex;gap:8px;margin-top:10px">
+  <button type="submit" class="btn primary">Salva</button>
+  <button type="button" id="cancelEvent" class="btn">Annulla</button>
+  <button type="button" id="deleteEvent" class="btn" style="background:#8B4545;color:#fff;display:none">Elimina</button>
+</div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-weight:700">Anteprima contatti</div>
+            <button id="addContactBtn" class="btn">Nuovo</button>
+          </div>
+          <div class="contacts-list" id="contactsPreview"></div>
+        </div>
+      </div>
+
+      <!-- Contacts Section (hidden by default) -->
+      <section id="section-contacts" class="card" style="display:none;margin-top:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-weight:700">Contatti</div>
+          <div style="display:flex;gap:8px">
+            <input id="contactSearch" placeholder="Cerca..." />
+            <select id="contactFilter">
+              <option value="">Tutti i ruoli</option>
+              <option>redazione</option>
+              <option>autore</option>
+              <option>illustratore</option>
+              <option>grafico</option>
+              <option>editore</option>
+              <option>collaboratore</option>
+              <option>contatto strategico</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px">
+          <div style="flex:1">
+            <div id="contactsList" class="contacts-list"></div>
+          </div>
+          <div style="width:360px">
+            <div class="card">
+              <div style="font-weight:700;margin-bottom:8px">Scheda contatto</div>
+              <form id="contactForm">
+                <label>Nome e cognome</label>
+                <input id="c_name" required />
+                <label>Telefono</label>
+                <input id="c_phone" />
+                <label>Email</label>
+                <input id="c_email" type="email" />
+                <label>Indirizzo ufficio</label>
+                <input id="c_address" />
+                <label>Ruolo</label>
+                <select id="c_role">
+                  <option>redazione</option>
+                  <option>autore</option>
+                  <option>illustratore</option>
+                  <option>grafico</option>
+                  <option>editore</option>
+                  <option>collaboratore</option>
+                  <option>contatto strategico</option>
+                </select>
+                <div style="display:flex;gap:8px;margin-top:10px">
+                  <button class="btn primary" type="submit">Salva</button>
+                  <button id="delContact" type="button" class="btn">Elimina</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notes Section -->
+      <section id="section-notes" class="card" style="display:none;margin-top:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-weight:700">Note</div>
+          <button id="newNoteBtn" class="btn">Nuova nota</button>
+        </div>
+        <div style="display:flex;gap:12px">
+          <div style="flex:1">
+            <div id="notesList" class="notes-list"></div>
+          </div>
+          <div style="width:360px">
+            <div class="card">
+              <div style="font-weight:700;margin-bottom:8px">Editor nota</div>
+              <form id="noteForm">
+                <label>Titolo</label>
+                <input id="n_title" />
+                <label>Contenuto</label>
+                <textarea id="n_body"></textarea>
+                <div style="display:flex;gap:8px;margin-top:10px">
+                  <button class="btn primary" type="submit">Salva</button>
+                  <button id="delNote" type="button" class="btn">Elimina</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer> PWA per consulenti editoriali • by Marco Mancinelli</footer>
+    </main>
+  </div>
+
+  <input id="fileInput" type="file" accept=".csv" style="display:none" />
+
+  <script>
+  /* ======= Simple local data layer using localStorage ======= */
+  const STORAGE_KEYS = {events:'ae_events_v1', contacts:'ae_contacts_v1', notes:'ae_notes_v1', archive:'ae_archive_v1'};
+  function uid(prefix='id'){return prefix+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+  function loadJSON(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return []}}
+  function saveJSON(k,v){localStorage.setItem(k,JSON.stringify(v))}
+
+  /* initialize default arrays */
+  let events = loadJSON(STORAGE_KEYS.events);
+  let contacts = loadJSON(STORAGE_KEYS.contacts);
+  let notes = loadJSON(STORAGE_KEYS.notes);
+  let archive = loadJSON(STORAGE_KEYS.archive);
+
+  /* Utility: ensure events are deleted on expiration and moved to archive by month */
+  function archiveExpired(){
+    const now = new Date();
+    let moved = [];
+    events = events.filter(ev=>{
+      const d = new Date(ev.datetime);
+      if(d < now){
+        // push to archive (group by year-month)
+        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+        archive.push({...ev, archivedOn:new Date().toISOString(), archiveKey:key});
+        moved.push(ev);
+        return false;
+      }
+      return true;
+    });
+    if(moved.length){
+      saveJSON(STORAGE_KEYS.events,events);
+      saveJSON(STORAGE_KEYS.archive,archive);
+    }
+    return moved.length;
+  }
+
+  /* Run archiveExpired on load and every minute */
+  archiveExpired();
+  setInterval(archiveExpired,60*1000);
+
+  /* ===== UI: Tabs ===== */
+  const tabCal = document.getElementById('tabCal');
+  const tabContacts = document.getElementById('tabContacts');
+  const tabNotes = document.getElementById('tabNotes');
+  function showTab(tab){
+    document.querySelectorAll('nav .menu button').forEach(b=>b.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('section-cal').style.display = tab===tabCal? 'block':'none';
+    document.getElementById('section-contacts').style.display = tab===tabContacts? 'block':'none';
+    document.getElementById('section-notes').style.display = tab===tabNotes? 'block':'none';
+  }
+  tabCal.onclick = ()=>showTab(tabCal);
+  tabContacts.onclick = ()=>showTab(tabContacts);
+  tabNotes.onclick = ()=>showTab(tabNotes);
+  
+
+  /* ===== Calendar rendering (month view) ===== */
+  let viewDate = new Date();
+function startOfMonth(d){return new Date(d.getFullYear(),d.getMonth(),1)}
+function renderMonth(){
+  const monthGrid = document.getElementById('monthGrid');
+  monthGrid.innerHTML = '';
+  const label = document.getElementById('monthLabel');
+  label.textContent = viewDate.toLocaleString('it-IT',{month:'long',year:'numeric'});
+
+  // Array con i nomi dei giorni della settimana (abbreviati)
+  const weekdays = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+  
+  // Aggiungi prima una riga con i nomi dei giorni della settimana
+  weekdays.forEach(day => {
+    const dayHeader = document.createElement('div');
+    dayHeader.className = 'day-header';
+    dayHeader.textContent = day;
+    monthGrid.appendChild(dayHeader);
+  });
+
+  const first = startOfMonth(viewDate);
+  const startDay = first.getDay(); // 0 Sun... but locale may differ
+  // adjust so that week starts on Monday: convert
+  const shift = (startDay + 6) % 7; // 0->6,1->0
+  const daysInMonth = new Date(viewDate.getFullYear(),viewDate.getMonth()+1,0).getDate();
+  
+  // add blanks
+  for(let i=0;i<shift;i++){
+    const blank=document.createElement('div');
+    blank.className='day';
+    blank.style.opacity=0.2;
+    monthGrid.appendChild(blank);
+  }
+  
+  for(let d=1;d<=daysInMonth;d++){
+    const cell = document.createElement('div');
+    cell.className='day';
+    const date = new Date(viewDate.getFullYear(),viewDate.getMonth(),d);
+   const dateStr = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dateSpan = document.createElement('div');
+    dateSpan.className='date';
+    dateSpan.textContent=d;
+    cell.appendChild(dateSpan);
+    const dotWrap = document.createElement('div');
+    dotWrap.className='dots';
+    const todays = events.filter(e=>{
+  const eventDateStr = e.datetime.slice(0,10);
+  return eventDateStr === dateStr;
+});
+    todays.forEach(ev=>{
+  const p = document.createElement('div');
+  p.className='pill '+(ev.type==='event'?'event':'app');
+  p.textContent = ev.type==='event' ? 'E' : 'A';
+  p.title = ev.title + (ev.note ? ' - ' + ev.note : '');
+  p.onclick = ()=>{populateEventForm(ev);window.location.hash='event-'+ev.id}
+  dotWrap.appendChild(p);
+})
+    cell.appendChild(dotWrap);
+    monthGrid.appendChild(cell);
+  }
+}
+
+  document.getElementById('prevMonth').onclick = ()=>{viewDate.setMonth(viewDate.getMonth()-1);renderMonth()}
+  document.getElementById('nextMonth').onclick = ()=>{viewDate.setMonth(viewDate.getMonth()+1);renderMonth()}
+
+  /* ===== List view ===== */
+  function renderList(){
+    const list = document.getElementById('upcomingList');list.innerHTML='';
+    const upcoming = events.slice().sort((a,b)=>new Date(a.datetime)-new Date(b.datetime));
+    upcoming.forEach(ev=>{
+      const it = document.createElement('div');it.className='item';
+      const left = document.createElement('div');left.innerHTML=`<div style="font-weight:600">${ev.title}</div><div class="meta">${new Date(ev.datetime).toLocaleString()}</div>`;
+      const right = document.createElement('div');
+      const btn = document.createElement('button');btn.className='btn';btn.textContent='Modifica';btn.onclick=()=>populateEventForm(ev);
+      right.appendChild(btn);
+      it.appendChild(left);it.appendChild(right);
+      list.appendChild(it);
+    })
+  }
+
+  /* ===== Archive view ===== */
+  function renderArchive(){
+    const area = document.getElementById('archiveGroups');area.innerHTML='';
+    const byKey = {};
+    archive.forEach(a=>{byKey[a.archiveKey]=byKey[a.archiveKey]||[];byKey[a.archiveKey].push(a)});
+    const keys = Object.keys(byKey).sort((a,b)=>b.localeCompare(a));
+    keys.forEach(k=>{
+      const div = document.createElement('div');div.style.marginBottom='12px';
+      const header = document.createElement('div');header.style.fontWeight='700';header.style.marginBottom='6px';header.textContent=k;
+      div.appendChild(header);
+      byKey[k].forEach(ae=>{
+        const r = document.createElement('div');r.className='item';
+        r.innerHTML = `<div><div style="font-weight:600">${ae.title}</div><div class="meta">${new Date(ae.datetime).toLocaleString()}</div></div>`;
+        div.appendChild(r);
+      })
+      area.appendChild(div);
+    })
+  }
+
+  document.getElementById('viewSelect').onchange = function(){
+  const v=this.value;
+  const calendarHeader = document.querySelector('.calendar-header');
+  const monthNav = calendarHeader.querySelector('div:first-child');
+  
+  document.getElementById('calendarArea').style.display = v==='month'?'block':'none';
+  document.getElementById('listArea').style.display = v==='list'?'block':'none';
+  document.getElementById('archiveArea').style.display = v==='archive'?'block':'none';
+  
+  // Nascondi i controlli mese ma mantieni lo spazio per il layout
+  monthNav.style.visibility = v==='month'?'visible':'hidden';
+  
+  if(v==='list')renderList();
+  if(v==='archive')renderArchive();
+}
+
+  /* ===== Event form ===== */
+  const eventForm = document.getElementById('eventForm');
+  let editingEventId = null;
+  // document.getElementById('newEventBtn').onclick = ()=>{editingEventId=null;eventForm.reset();document.getElementById('evDate').value='';}
+  document.getElementById('cancelEvent').onclick = ()=>{
+  editingEventId=null;
+  eventForm.reset();
+  document.getElementById('deleteEvent').style.display='none';
+}
+
+  function populateEventForm(ev){
+  editingEventId=ev.id;
+  document.getElementById('evTitle').value=ev.title;
+  document.getElementById('evDate').value=ev.datetime.slice(0,16);
+  document.getElementById('evType').value=ev.type;
+  document.getElementById('evNote').value=ev.note||'';
+  document.getElementById('deleteEvent').style.display='inline-block';
+}
+
+  eventForm.onsubmit = function(e){e.preventDefault();
+  const title = document.getElementById('evTitle').value.trim();
+  const dt = document.getElementById('evDate').value; if(!dt) return alert('Inserisci data/ora (dal 2025 in poi)');
+  const type = document.getElementById('evType').value; const note = document.getElementById('evNote').value;
+  const dtObj = new Date(dt);
+  if(dtObj.getFullYear()<2025) return alert('La data deve essere 2025 o successiva');
+  if(editingEventId){
+    const idx = events.findIndex(x=>x.id===editingEventId); if(idx>-1){events[idx]={...events[idx],title,datetime:dt,type,note};}
+  } else {
+    events.push({id:uid('ev_'),title,datetime:dt,type,note,created:new Date().toISOString()});
+  }
+  saveJSON(STORAGE_KEYS.events,events);renderMonth();renderList();renderContactsPreview();eventForm.reset();editingEventId=null;
+}
+
+document.getElementById('deleteEvent').onclick = function(){
+  if(!editingEventId) return alert('Nessun evento selezionato');
+  if(confirm('Sei sicuro di voler eliminare questo evento/appuntamento?')){
+    events = events.filter(e => e.id !== editingEventId);
+    saveJSON(STORAGE_KEYS.events, events);
+    renderMonth();
+    renderList();
+    renderContactsPreview();
+    eventForm.reset();
+    editingEventId = null;
+    document.getElementById('deleteEvent').style.display = 'none';
+    alert('Evento eliminato');
+  }
+}
+
+  /* ===== Contacts ===== */
+  const contactForm = document.getElementById('contactForm');
+  let editingContactId = null;
+  function renderContacts(){
+    const list = document.getElementById('contactsList');list.innerHTML='';
+    const search = document.getElementById('contactSearch').value.toLowerCase();
+    const filter = document.getElementById('contactFilter').value;
+    contacts.filter(c=>{
+      if(filter && c.role!==filter) return false;
+      if(search){
+        return [c.name,c.email,c.phone,c.role,c.address].join(' ').toLowerCase().includes(search);
+      }
+      return true;
+    }).forEach(c=>{
+      const row = document.createElement('div');row.className='contact-row';
+      const left = document.createElement('div');left.style.flex='1';left.innerHTML=`<div style="font-weight:600">${c.name}</div><div class="meta">${c.role} • ${c.email||''} ${c.phone? '• '+c.phone:''}</div>`;
+      const right = document.createElement('div');
+      const ebtn = document.createElement('button');ebtn.className='btn';ebtn.textContent='Apri';ebtn.onclick=()=>{populateContactForm(c)};
+      right.appendChild(ebtn);
+      row.appendChild(left);row.appendChild(right);
+      list.appendChild(row);
+    })
+  }
+  function renderContactsPreview(){
+    const preview = document.getElementById('contactsPreview');preview.innerHTML='';
+    contacts.slice(0,6).forEach(c=>{
+      const r = document.createElement('div');r.className='contact-row';r.innerHTML=`<div style="font-weight:600">${c.name}</div><div class="meta">${c.role}</div>`;
+      preview.appendChild(r);
+    })
+  }
+
+  document.getElementById('addContactBtn').onclick = ()=>{editingContactId=null;contactForm.reset();}
+  function populateContactForm(c){editingContactId=c.id;document.getElementById('c_name').value=c.name;document.getElementById('c_phone').value=c.phone;document.getElementById('c_email').value=c.email;document.getElementById('c_address').value=c.address;document.getElementById('c_role').value=c.role}
+
+  contactForm.onsubmit = function(e){e.preventDefault();
+    const name=document.getElementById('c_name').value.trim();if(!name) return alert('Nome richiesto');
+    const phone=document.getElementById('c_phone').value;const email=document.getElementById('c_email').value;const address=document.getElementById('c_address').value;const role=document.getElementById('c_role').value;
+    if(editingContactId){const idx=contacts.findIndex(c=>c.id===editingContactId);if(idx>-1)contacts[idx]={...contacts[idx],name,phone,email,address,role};
+    } else {contacts.push({id:uid('ct_'),name,phone,email,address,role,created:new Date().toISOString()});}
+    saveJSON(STORAGE_KEYS.contacts,contacts);renderContacts();renderContactsPreview();contactForm.reset();editingContactId=null;
+  }
+  document.getElementById('delContact').onclick = function(){if(!editingContactId) return alert('Nessun contatto selezionato'); if(confirm('Eliminare contatto?')){contacts=contacts.filter(c=>c.id!==editingContactId);saveJSON(STORAGE_KEYS.contacts,contacts);renderContacts();renderContactsPreview();contactForm.reset();editingContactId=null}}
+
+  document.getElementById('contactSearch').oninput = renderContacts;document.getElementById('contactFilter').onchange = renderContacts;
+
+  /* ===== Notes ===== */
+  const noteForm = document.getElementById('noteForm');let editingNoteId=null;
+  function renderNotes(){const list=document.getElementById('notesList');list.innerHTML='';notes.slice().reverse().forEach(n=>{const it=document.createElement('div');it.className='item';it.innerHTML=`<div style="flex:1"><div style="font-weight:600">${n.title||'(senza titolo)'}</div><div class="meta">${new Date(n.updated||n.created).toLocaleString()}</div></div>`;it.onclick=()=>{editingNoteId=n.id;document.getElementById('n_title').value=n.title;document.getElementById('n_body').value=n.body};list.appendChild(it)})}
+  document.getElementById('newNoteBtn').onclick=()=>{editingNoteId=null;noteForm.reset()}
+  noteForm.onsubmit=function(e){e.preventDefault();const title=document.getElementById('n_title').value;const body=document.getElementById('n_body').value;if(editingNoteId){const idx=notes.findIndex(x=>x.id===editingNoteId);if(idx>-1)notes[idx]={...notes[idx],title,body,updated:new Date().toISOString()}}else{notes.push({id:uid('n_'),title,body,created:new Date().toISOString()})}saveJSON(STORAGE_KEYS.notes,notes);renderNotes();noteForm.reset();editingNoteId=null}
+  document.getElementById('delNote').onclick=function(){if(!editingNoteId)return alert('Nessuna nota selezionata'); if(confirm('Eliminare nota?')){notes=notes.filter(n=>n.id!==editingNoteId);saveJSON(STORAGE_KEYS.notes,notes);renderNotes();noteForm.reset();editingNoteId=null}}
+
+  /* ===== CSV Export / Import for events & contacts ===== */
+  function toCSV(rows,cols){const esc=v=>`"${String(v||'').replace(/"/g,'""')}"`;return [cols.join(',')].concat(rows.map(r=>cols.map(c=>esc(r[c]||'')).join(','))).join('\n')}
+
+  document.getElementById('exportBtn').onclick = function(){
+  const evCols=['id','title','datetime','type','note','created'];
+  const ctCols=['id','name','phone','email','address','role','created'];
+  const ntCols=['id','title','body','created','updated'];
+  
+  const evCSV = toCSV(events,evCols);
+  const ctCSV = toCSV(contacts,ctCols);
+  const ntCSV = toCSV(notes,ntCols);
+  
+  const blob = new Blob([
+    "---EVENTS---\n", evCSV,
+    "\n---CONTACTS---\n", ctCSV,
+    "\n---NOTES---\n", ntCSV
+  ], {type:'text/csv;charset=utf-8'});
+  
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'agenda_editoriale_export.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+  document.getElementById('importBtn').onclick = ()=>document.getElementById('fileInput').click();
+  document.getElementById('fileInput').onchange = function(e){
+    const f = e.target.files[0]; if(!f) return; const rdr=new FileReader();rdr.onload=function(){parseCombinedCSV(rdr.result)};rdr.readAsText(f);
+  }
+  function parseCombinedCSV(text){
+  // Dividi il testo usando i marker delle sezioni
+  const sections = text.split(/^---(EVENTS|CONTACTS|NOTES)---$/m);
+  
+  // Rimuovi la prima parte vuota se presente
+  if(sections[0].trim() === '') sections.shift();
+  
+  for(let i = 0; i < sections.length; i += 2){
+    const sectionType = sections[i];
+    const csvData = sections[i + 1];
+    
+    if(!csvData || !sectionType) continue;
+    
+    const lines = csvData.trim().split('\n').filter(line => line.trim());
+    if(lines.length < 2) continue; // Serve almeno header + 1 riga dati
+    
+    const headerLine = lines.shift();
+    const headers = parseCSVLine(headerLine);
+    
+    const parsed = lines.map(line => {
+      const values = parseCSVLine(line);
+      const obj = {};
+      headers.forEach((header, idx) => {
+        obj[header] = values[idx] || '';
+      });
+      return obj;
+    });
+    
+    // Debug: mostra che sezione stiamo processando
+    console.log('Processando sezione:', sectionType, 'con', parsed.length, 'elementi');
+    
+    if(sectionType === 'EVENTS'){
+      parsed.forEach(p => {
+        if(!events.find(e => e.id === p.id)) events.push(p);
+      });
+    } else if(sectionType === 'CONTACTS'){
+      parsed.forEach(p => {
+        if(!contacts.find(c => c.id === p.id)) contacts.push(p);
+      });
+    } else if(sectionType === 'NOTES'){
+      parsed.forEach(p => {
+        if(!notes.find(n => n.id === p.id)) notes.push(p);
+      });
+    }
+  }
+  
+  saveJSON(STORAGE_KEYS.events, events);
+  saveJSON(STORAGE_KEYS.contacts, contacts);
+  saveJSON(STORAGE_KEYS.notes, notes);
+  renderMonth();
+  renderContacts();
+  renderContactsPreview();
+  renderNotes();
+  alert('Import completato');
+}
+
+// Funzione helper per parsare correttamente una riga CSV
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  let i = 0;
+  
+  while (i < line.length) {
+    const char = line[i];
+    const nextChar = line[i + 1];
+    
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        // Doppio quote = quote letterale
+        current += '"';
+        i += 2;
+        continue;
+      } else {
+        // Inizio o fine quote
+        inQuotes = !inQuotes;
+      }
+    } else if (char === ',' && !inQuotes) {
+      // Separatore trovato fuori dalle quote
+      result.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+    i++;
+  }
+  
+  // Aggiungi l'ultimo campo
+  result.push(current.trim());
+  return result;
+}
+
+  /* ===== Service Worker registration helper (user said they already have sw.js) ===== */
+  /*document.getElementById('registerSW').onclick = async function(){
+    if('serviceWorker' in navigator){try{await navigator.serviceWorker.register('sw.js');alert('Service worker registrato');}catch(e){alert('Errore registrazione SW: '+e.message)}}else alert('SW non supportato');
+  } */
+
+  /* ===== Manual archive button ===== */
+  document.getElementById('clearExpired').onclick = function(){const n=archiveExpired();if(n)alert('Spostati '+n+' elementi nello storico');else alert('Nessun elemento scaduto')}
+
+  /* ===== Initialization ===== */
+  function init(){
+  // clamp viewDate >= Jan 2025
+  if(viewDate.getFullYear()<2025)viewDate=new Date(2025,0,1);
+  renderMonth();renderList();renderContacts();renderContactsPreview();renderNotes();
+  // route hash to open entity if present
+  if(location.hash.startsWith('#event-')){const id=location.hash.split('-')[1];const ev=events.find(x=>x.id===id);if(ev)populateEventForm(ev)}
+  
+  // Mobile navigation and home button
+  document.getElementById('notesBtn').onclick = ()=>showTab(tabNotes);
+  document.getElementById('contactsBtn').onclick = ()=>showTab(tabContacts);
+  document.getElementById('homeTitle').onclick = ()=>showTab(tabCal);
+}
+
+  init();
+  if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(() => console.log('SW registrato'))
+    .catch(err => console.error('SW errore:', err));
+}
+
+  </script>
+</body>
+</html>
+

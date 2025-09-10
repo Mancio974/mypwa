@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Book Fair</title>
+  <meta name="description" content="PWA per gestire vendite in fiera - My Book Fair" />
+  <meta name="theme-color" content="#294d3e" />
+  <link rel="manifest" href="./manifest.webmanifest">
+  <style>
+    :root{
+      --bg:#0b0b0b;
+      --card:#0f1413;
+      --accent1:#7a2626;
+      --accent2:#294d3e;
+      --muted:#9aa3a0;
+      --glass: rgba(255,255,255,0.03);
+      --pad:12px;
+    }
+    *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#051012);color:#eef;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+    header{display:flex;align-items:center;gap:12px;padding:14px; background:var(--accent1);}
+    header h1{margin:0;font-size:18px;color:#fff}
+    header .tools{margin-left:auto;display:flex;gap:8px}
+    main{padding:12px;display:grid;grid-template-columns:360px 1fr;gap:12px;align-items:start}
+    .card{background:var(--card);border-radius:12px;padding:12px;box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+    .card-sales {
+    background: #132226;
+    border: 1px solid rgba(42, 77, 62, 0.3);
+    }
+    header button:not(.accent1) {
+    background: #132226;
+   }
+    label{display:block;font-size:13px;color:var(--muted);margin-top:8px}
+    input,select,textarea,button{font-size:14px}
+    input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;font-size:16px;-webkit-text-size-adjust:100%;}
+    button{padding:10px 12px;border-radius:10px;border:none;background:var(--accent2);color:#fff;cursor:pointer}
+    .accent1{background:#5a1d1d}
+    .row{display:flex;gap:8px;align-items:center}
+    .small{font-size:12px;color:var(--muted)}
+    header button {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{padding:8px;border-bottom:1px dashed rgba(255,255,255,0.03);text-align:left}
+    th{font-size:13px}
+    footer{padding:10px;text-align:center;color:var(--muted)}
+    @media(max-width:900px){
+      main{grid-template-columns:1fr}
+      header{flex-direction:column;align-items:flex-start}
+      header .tools{margin-left:0;width:100%;display:flex;gap:8px;flex-wrap:wrap}
+      input,select{padding:12px;font-size:16px}
+      button{flex:1;padding:12px;font-size:16px}
+      .row{flex-direction:column;align-items:stretch}
+    }
+    .action-row{display:flex;gap:8px;flex-wrap:wrap}
+    .big-btn{padding:12px 16px;border-radius:12px}
+    .muted{color:var(--muted)}
+    
+    /* STILE PER TAB CONFRONTO FIERE */
+
+    .tabs-container {
+  margin-top: 12px;
+}
+.tabs-nav {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+.tab-button {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+}
+.tab-button.active {
+  background: var(--accent2);
+  color: #fff;
+}
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+.report-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  border-bottom: 1px dashed rgba(255,255,255,0.03);
+}
+.chart-container {
+  height: 300px;
+  margin-top: 12px;
+}
+.bar-chart {
+  display: flex;
+  align-items: end;
+  height: 250px;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+}
+.bar {
+  flex: 1;
+  background: linear-gradient(to top, var(--accent1), var(--accent2));
+  border-radius: 4px 4px 0 0;
+  min-height: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+.bar-label {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 4px;
+  word-break: break-word;
+}
+.bar-value {
+  font-size: 10px;
+  color: #fff;
+  text-align: center;
+  padding: 2px;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Book Fair - Bakemono Lab</h1>
+    <div class="small muted">Gestione vendite in fiera</div>
+    <div class="tools">
+      <button id="exportAll">Esporta storico CSV</button>
+      <input id="importFile" type="file" accept="text/csv" style="display:none" />
+      <button id="importBtn" class="accent1">Importa CSV</button>
+      <button id="downloadManifest">Installa PWA</button>
+    </div>
+  </header>
+
+  <main>
+    <aside class="card">
+      <h3 style="margin:0 0 8px 0">Fiera (crea / seleziona)</h3>
+      <label>Nome fiera (univoco)</label>
+      <input id="fairName" placeholder="Es. Torino Book Fair 2025" />
+      <label>Data inizio</label>
+      <input id="fairStart" type="date" />
+      <label>Data fine</label>
+      <input id="fairEnd" type="date" />
+      <div class="row" style="margin-top:10px">
+        <button id="createFair">Crea/Salva fiera</button>
+        <select id="fairSelect"></select>
+        <button id="deleteFair" style="background:#550000">Elimina</button>
+      </div>
+
+      <hr style="border:none;height:1px;background:rgba(255,255,255,0.03);margin:12px 0" />
+      <h4 style="margin:0">Libri della fiera</h4>
+      <label>Titolo</label>
+      <input id="bookTitle" placeholder="Titolo volume" />
+      <label>Copie disponibili</label>
+      <input id="bookCopies" type="number" min="0" value="0" />
+      <label>Prezzo copertina (€)</label>
+      <input id="bookPrice" type="number" min="0" step="0.01" value="0" />
+      <div style="margin-top:10px" class="row">
+        <button id="addBook">Aggiungi Libro</button>
+      </div>
+
+      <div id="inventoryList" style="margin-top:12px"></div>
+      <div style="height:8px"></div>
+      <div class="small">I dati vengono salvati localmente nel browser. Nessun cloud richiesto.</div>
+    </aside>
+
+   <section class="card card-sales">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <div>
+          <h3 style="margin:0">Gestione vendite</h3>
+          <div class="small">Seleziona una fiera per iniziare</div>
+        </div>
+        <div class="small muted">Suggerimento: usa i bottoni grandi su mobile</div>
+      </div>
+
+      <div id="salesSection" style="display:none;margin-top:12px">
+        <div class="row">
+          <label style="flex:1">Giorno (seleziona)</label>
+          <select id="daySelect"></select>
+          <button id="addDay">Aggiungi Giorno</button>
+          <button id="closeDay" style="background:#444">Chiudi Giorno</button>
+        </div>
+
+        <h4 style="margin-top:12px">Registro libri</h4>
+        <div id="booksTableContainer"></div>
+
+        <div style="margin-top:12px" class="action-row">
+          <button id="sellCash" class="big-btn">Contanti</button>
+          <button id="sellPos" class="big-btn">Pos</button>
+          <button id="giftCopies" class="big-btn">Omaggio</button>
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <button id="daySummary">Riepilogo giornata</button>
+          <button id="finalSummary" class="accent1">Riepilogo fiera</button>
+          <button id="exportFair" style="background:transparent;border:1px solid rgba(255,255,255,0.06);">Esporta fiera CSV</button>
+        </div>
+
+        <hr style="border:none;height:1px;background:rgba(255,255,255,0.03);margin:12px 0" />
+        <div id="summaries"></div>
+      </div>
+
+      <div id="emptyNotice" style="margin-top:12px">
+        <p class="muted">Nessuna fiera selezionata. Crea o seleziona una fiera dal pannello a sinistra.</p>
+      </div>
+    </section>
+
+<!-- QUI INIZIA IL TAB PER IL CONFRONTO FIERE -->
+
+<section class="card">
+  <h3 style="margin:0 0 8px 0">Report di Gestione</h3>
+  <div class="small muted">Analisi e confronto delle fiere</div>
+  
+  <div class="tabs-container">
+    <div class="tabs-nav">
+      <button class="tab-button active" data-tab="summary">Riepilogo Fiere</button>
+      <button class="tab-button" data-tab="charts">Grafici Comparativi</button>
+    </div>
+    
+    <div id="summaryTab" class="tab-content active">
+      <div id="fairsSummaryList">
+        <div class="small muted">Nessuna fiera conclusa trovata.</div>
+      </div>
+    </div>
+    
+    <div id="chartsTab" class="tab-content">
+      <h4 style="margin:0 0 8px 0">Confronto Incassi</h4>
+      <div class="chart-container">
+        <div id="revenueChart" class="bar-chart"></div>
+      </div>
+      
+      <h4 style="margin:8px 0 8px 0">Confronto Copie Vendute</h4>
+      <div class="chart-container">
+        <div id="copiesChart" class="bar-chart"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  </main>
+
+  <footer class="card" style="margin:12px">My Book Fair — PWA | App per CE</footer>
+
+  <script>
+    // Data key
+    const STORAGE_KEY = 'mybookfair_fairs_v5';
+
+    function uid(){return 'id_'+Math.random().toString(36).slice(2,9)}
+    function loadFairs(){ try{ const s = localStorage.getItem(STORAGE_KEY); return s ? JSON.parse(s) : []; } catch(e){ console.warn('load err',e); return []; } }
+    function saveFairs(f){ localStorage.setItem(STORAGE_KEY, JSON.stringify(f)); }
+
+    // UI refs
+    const fairName = document.getElementById('fairName');
+    const fairStart = document.getElementById('fairStart');
+    const fairEnd = document.getElementById('fairEnd');
+    const createFairBtn = document.getElementById('createFair');
+    const fairSelect = document.getElementById('fairSelect');
+    const deleteFairBtn = document.getElementById('deleteFair');
+    const addBookBtn = document.getElementById('addBook');
+    const bookTitle = document.getElementById('bookTitle');
+    const bookCopies = document.getElementById('bookCopies');
+    const bookPrice = document.getElementById('bookPrice');
+    const inventoryList = document.getElementById('inventoryList');
+    const salesSection = document.getElementById('salesSection');
+    const emptyNotice = document.getElementById('emptyNotice');
+    const daySelect = document.getElementById('daySelect');
+    const addDayBtn = document.getElementById('addDay');
+    const booksTableContainer = document.getElementById('booksTableContainer');
+    const sellCashBtn = document.getElementById('sellCash');
+    const sellPosBtn = document.getElementById('sellPos');
+    const giftCopiesBtn = document.getElementById('giftCopies');
+    const daySummaryBtn = document.getElementById('daySummary');
+    const finalSummaryBtn = document.getElementById('finalSummary');
+    const summaries = document.getElementById('summaries');
+    const exportAllBtn = document.getElementById('exportAll');
+    const importBtn = document.getElementById('importBtn');
+    const importFile = document.getElementById('importFile');
+    const downloadManifestBtn = document.getElementById('downloadManifest');
+    const exportFairBtn = document.getElementById('exportFair');
+
+    // VARIABILI PER CONFRONTO FIERE
+    const summaryTab = document.getElementById('summaryTab');
+    const chartsTab = document.getElementById('chartsTab');
+    const fairsSummaryList = document.getElementById('fairsSummaryList');
+    const revenueChart = document.getElementById('revenueChart');
+    const copiesChart = document.getElementById('copiesChart');
+
+    // state
+    let fairs = loadFairs();
+    let currentFairId = null;
+
+    // utilities
+    function findFair(id){ return fairs.find(f=>f.id===id); }
+    function escapeHtml(s){ return String(s).replace(/[&<>\"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) }
+
+    function refreshFairList(){
+      fairSelect.innerHTML = '';
+      const placeholder = document.createElement('option'); placeholder.value=''; placeholder.textContent='-- seleziona --'; fairSelect.appendChild(placeholder);
+      fairs.forEach(f=>{ const o = document.createElement('option'); o.value = f.id; o.textContent = f.name + (f.start?(' ('+f.start+')'):''); fairSelect.appendChild(o); });
+    }
+
+    function setCurrentFair(id, preserveDay){
+      currentFairId = id;
+      const fair = findFair(id);
+      if(!fair){ salesSection.style.display='none'; emptyNotice.style.display='block'; inventoryList.innerHTML=''; booksTableContainer.innerHTML=''; daySelect.innerHTML=''; summaries.innerHTML=''; return; }
+      salesSection.style.display='block'; emptyNotice.style.display='none';
+      // fill header fields
+      fairName.value = fair.name || '';
+      fairStart.value = fair.start || '';
+      fairEnd.value = fair.end || '';
+      renderInventory(fair);
+      renderDays(fair, preserveDay);
+      renderBooksTable(fair);
+    }
+
+    function renderInventory(fair){
+      inventoryList.innerHTML = '';
+      if(!fair.books || fair.books.length === 0){ inventoryList.innerHTML = '<div class="small muted">Nessun libro inserito.</div>'; return; }
+      const tbl = document.createElement('table');
+      tbl.innerHTML = '<thead><tr><th>Titolo</th><th>Disponibili</th><th>Prezzo</th><th>Venduti</th><th>Azioni</th></tr></thead>';
+      const tbody = document.createElement('tbody');
+      fair.books.forEach(b=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${escapeHtml(b.title)}</td><td>${b.copies}</td><td>€ ${Number(b.price).toFixed(2)}</td><td>${b.totalSold||0}</td><td><button data-id="${b.id}" class="edit">Modifica</button> <button data-id="${b.id}" class="rem">Rimuovi</button></td>`;
+        tbody.appendChild(tr);
+      });
+      tbl.appendChild(tbody); inventoryList.appendChild(tbl);
+      // actions
+      inventoryList.querySelectorAll('.rem').forEach(btn=>btn.onclick=()=>{ if(!confirm('Rimuovere libro?')) return; const id = btn.dataset.id; const f = findFair(currentFairId); f.books = f.books.filter(x=>x.id!==id); saveAndRefresh(daySelect.value); });
+      inventoryList.querySelectorAll('.edit').forEach(btn=>btn.onclick=()=>{ const id = btn.dataset.id; const f = findFair(currentFairId); const b = f.books.find(x=>x.id===id); const newTitle = prompt('Titolo', b.title); if(newTitle==null) return; const newCopies = prompt('Copie disponibili', b.copies); if(newCopies==null) return; const newPrice = prompt('Prezzo', b.price); if(newPrice==null) return; b.title=newTitle; b.copies=Number(newCopies); b.price=Number(newPrice); saveAndRefresh(daySelect.value); });
+    }
+
+    function renderDays(fair, keepDay){
+      daySelect.innerHTML = '';
+      (fair.days||[]).forEach((d,i)=>{ const o = document.createElement('option'); o.value = i; o.textContent = d.date + (d.closed ? ' [CHIUSA]' : ''); daySelect.appendChild(o); });
+      if((fair.days||[]).length === 0){ const opt = document.createElement('option'); opt.value = '-1'; opt.textContent = '(Nessun giorno)'; daySelect.appendChild(opt); }
+      // try to keep the same selection (if provided)
+      if(keepDay != null){ try{ daySelect.value = keepDay; } catch(e){} }
+    }
+
+    function renderBooksTable(fair){
+      booksTableContainer.innerHTML = '';
+      if(!fair.books || fair.books.length === 0){ booksTableContainer.innerHTML = '<div class="small muted">Aggiungi libri per poter registrare vendite.</div>'; return; }
+      const tbl = document.createElement('table');
+      tbl.innerHTML = '<thead><tr><th>Titolo</th><th>Prezzo</th><th>Disponibili</th><th>Vendite (q.tà)</th><th>Incasso</th></tr></thead>';
+      const tbody = document.createElement('tbody');
+      fair.books.forEach(b=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${escapeHtml(b.title)}</td><td>€ ${Number(b.price).toFixed(2)}</td><td>${b.copies}</td><td><input type="number" min="0" max="${b.copies}" data-id="${b.id}" class="soldInput" value="0"/></td><td class="rev" data-id="${b.id}">€ 0.00</td>`;
+        tbody.appendChild(tr);
+      });
+      tbl.appendChild(tbody); booksTableContainer.appendChild(tbl);
+      // update revenue cell when user types
+      booksTableContainer.querySelectorAll('.soldInput').forEach(inp=>{
+        inp.oninput = ()=>{
+          const id = inp.dataset.id; const f = findFair(currentFairId); const b = f.books.find(x=>x.id===id); const val = Number(inp.value)||0; const rev = val * Number(b.price); const td = booksTableContainer.querySelector('.rev[data-id="'+id+'"]'); if(td) td.textContent = '€ '+rev.toFixed(2);
+        }
+      });
+    }
+
+    function saveAndRefresh(preserveDay){
+      saveFairs(fairs);
+      // rebuild list and keep selection
+      refreshFairList();
+      if(currentFairId) try{ fairSelect.value = currentFairId; } catch(e){}
+      setCurrentFair(currentFairId, preserveDay);
+      renderReports();
+    }
+
+    // --- actions ---
+    createFairBtn.onclick = ()=>{
+      const name = fairName.value.trim(); if(!name){ alert('Inserisci nome fiera'); return }
+      const start = fairStart.value; const end = fairEnd.value; if(!start || !end){ alert('Inserisci date'); return }
+      let fair = fairs.find(f=>f.name===name);
+      if(!fair){ fair = { id: uid(), name, start, end, books: [], days: [], createdAt: new Date().toISOString() }; fairs.push(fair); }
+      else { fair.start = start; fair.end = end }
+      currentFairId = fair.id;
+      saveAndRefresh(null);
+    }
+
+    fairSelect.onchange = ()=>{ const id = fairSelect.value; currentFairId = id; setCurrentFair(id, 0); }
+
+    deleteFairBtn.onclick = ()=>{
+      if(!currentFairId){ alert('Seleziona fiera'); return }
+      if(!confirm('Eliminare fiera e tutti i suoi dati?')) return;
+      fairs = fairs.filter(f=>f.id!==currentFairId);
+      // auto-select first if exists
+      currentFairId = fairs.length>0?fairs[0].id:null;
+      saveAndRefresh(0);
+    }
+
+    addBookBtn.onclick = ()=>{
+      if(!currentFairId){ alert('Seleziona fiera prima'); return }
+      const title = bookTitle.value.trim(); if(!title){ alert('Titolo obbligatorio'); return }
+      const copies = Number(bookCopies.value)||0; const price = Number(bookPrice.value)||0;
+      const fair = findFair(currentFairId);
+      fair.books.push({ id: uid(), title, copies, price, totalSold: 0 });
+      bookTitle.value=''; bookCopies.value=0; bookPrice.value=0;
+      saveAndRefresh(daySelect.value || 0);
+    }
+
+    addDayBtn.onclick = ()=>{
+      if(!currentFairId){ alert('Seleziona fiera'); return }
+      const fair = findFair(currentFairId);
+      const daysCount = fair.days.length||0;
+      const startDate = new Date(fair.start);
+      const newDate = new Date(startDate.getTime() + daysCount*24*3600*1000);
+      const iso = newDate.toISOString().slice(0,10);
+      fair.days.push({ date: iso, sales: {}, closed: false });
+      const newIndex = String(fair.days.length - 1);
+      saveAndRefresh(newIndex);
+    }
+
+    function applySales(mode){
+      if(!currentFairId){ alert('Seleziona fiera'); return }
+      const fair = findFair(currentFairId);
+      const dayIndex = Number(daySelect.value);
+      if(isNaN(dayIndex) || dayIndex<0 || !fair.days[dayIndex]){ alert('Seleziona giorno valido'); return }
+      const preserveDay = String(dayIndex);
+      const dayRecord = fair.days[dayIndex];
+      if(dayRecord.closed){ alert('Giornata chiusa, non modificabile'); return }
+      const inputs = booksTableContainer.querySelectorAll('.soldInput'); let any=false;
+      inputs.forEach(inp=>{
+        const id = inp.dataset.id; const sold = Math.floor(Number(inp.value)||0); if(sold<=0) return; any=true; const book = fair.books.find(b=>b.id===id); const actualSold = Math.min(sold, book.copies); const revenue = actualSold * Number(book.price); book.copies = Math.max(0, book.copies - actualSold); if(mode!=='gift') book.totalSold = (book.totalSold||0) + actualSold; dayRecord.sales[id] = dayRecord.sales[id] || { sold:0, revenue:0, cash:0, pos:0, gift:0 };
+        if(mode==='cash'){ dayRecord.sales[id].sold += actualSold; dayRecord.sales[id].revenue += revenue; dayRecord.sales[id].cash += revenue }
+        else if(mode==='pos'){ dayRecord.sales[id].sold += actualSold; dayRecord.sales[id].revenue += revenue; dayRecord.sales[id].pos += revenue }
+        else if(mode==='gift'){ dayRecord.sales[id].gift += actualSold }
+      });
+      if(!any){ alert('Nessuna vendita registrata'); return }
+      saveAndRefresh(preserveDay);
+    }
+
+    sellCashBtn.onclick = ()=>applySales('cash');
+    sellPosBtn.onclick = ()=>applySales('pos');
+    giftCopiesBtn.onclick = ()=>applySales('gift');
+
+    daySummaryBtn.onclick = ()=>{
+      if(!currentFairId){ alert('Seleziona fiera'); return }
+      const fair = findFair(currentFairId); const dayIndex = Number(daySelect.value);
+      if(isNaN(dayIndex) || dayIndex<0 || !fair.days[dayIndex]){ alert('Seleziona giorno valido'); return }
+      const d = fair.days[dayIndex];
+      const totals = Object.values(d.sales||{}).reduce((acc,s)=>{ acc.copies += s.sold; acc.cash += s.cash; acc.pos += s.pos; acc.gift += s.gift; return acc }, { copies:0, cash:0, pos:0, gift:0 });
+      let best = null; for(const [id,s] of Object.entries(d.sales||{})){ const book = fair.books.find(b=>b.id===id) || { title:'(sconosciuto)' }; if(!best || s.sold>best.sold) best = { title: book.title, sold: s.sold }; }
+      summaries.innerHTML = `<div class="card"><strong>Riepilogo ${d.date}</strong><div class="small">Copie vendute: ${totals.copies} — Copie regalo: ${totals.gift}</div><div class="small">Incasso contanti: € ${totals.cash.toFixed(2)} — Incasso POS: € ${totals.pos.toFixed(2)}</div><div class="small">Best seller: ${best?escapeHtml(best.title)+' ('+best.sold+' copie)':'-'}</div></div>`;
+    }
+
+    finalSummaryBtn.onclick = ()=>{
+      if(!currentFairId){ alert('Seleziona fiera'); return }
+      const fair = findFair(currentFairId);
+      const totals = fair.days.reduce((acc,d)=>{ Object.values(d.sales||{}).forEach(s=>{ acc.copies += s.sold; acc.cash += s.cash; acc.pos += s.pos; acc.gift += s.gift }); return acc }, { copies:0, cash:0, pos:0, gift:0 });
+      const agg = {};
+      fair.days.forEach(d=>{ Object.entries(d.sales||{}).forEach(([id,s])=>{ agg[id] = (agg[id]||0) + (s.sold||0) }) });
+      const top = Object.entries(agg).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([id,q])=>{ const b = fair.books.find(x=>x.id===id); return `${b?b.title:'(?)'} — ${q} copie`; });
+      summaries.innerHTML = `<div class="card"><strong>Riepilogo fiera: ${escapeHtml(fair.name)}</strong><div class="small">Totale copie vendute: ${totals.copies} — Copie regalo: ${totals.gift}</div><div class="small">Incasso contanti: € ${totals.cash.toFixed(2)} — Incasso POS: € ${totals.pos.toFixed(2)}</div><div class="small">Incasso totale: € ${(totals.cash+totals.pos).toFixed(2)}</div><div class="small">Top 3 titoli:</div><ol>${top.map(t=>'<li>'+escapeHtml(t)+'</li>').join('')}</ol></div>`;
+    }
+
+    // close day confirmation
+    const closeDayBtn = document.getElementById('closeDay');
+    closeDayBtn.onclick = ()=>{
+      if(!currentFairId) return; const fair = findFair(currentFairId); const idx = Number(daySelect.value); if(isNaN(idx) || idx<0 || !fair.days[idx]){ alert('Seleziona giorno'); return } if(fair.days[idx].closed){ alert('Giorno già chiuso'); return }
+      const confirmation = prompt('Per chiudere definitivamente la giornata scrivi "chiudi"'); if(confirmation !== 'chiudi'){ alert('Conferma non valida'); return }
+      fair.days[idx].closed = true; saveAndRefresh(String(idx));
+    }
+
+    // CSV export/import
+    exportAllBtn.onclick = ()=>{
+      const rows = [['name','start','end','copies_sold','revenue_cash','revenue_pos']];
+      fairs.forEach(f=>{ const copies = f.books.reduce((a,b)=>a+(b.totalSold||0),0); let cash=0,pos=0; f.days.forEach(d=>{ Object.values(d.sales||{}).forEach(s=>{ cash += s.cash || 0; pos += s.pos || 0 }) }); rows.push([f.name,f.start,f.end,copies.toString(),cash.toFixed(2),pos.toFixed(2)]) });
+      const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n'); const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='mybookfair_history.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    importBtn.onclick = ()=> importFile.click();
+    importFile.onchange = (e)=>{
+      const f = e.target.files[0]; if(!f) return; const reader = new FileReader(); reader.onload = ev=>{ const text = ev.target.result; const lines = text.split(/\r?\n/).filter(Boolean); if(lines.length<2){ alert('CSV vuoto o non valido'); return } const header = lines[0].toLowerCase().split(',').map(h=>h.replace(/"/g,'').trim()); const nameIdx = header.findIndex(h=>h.includes('name')||h.includes('nome')); const startIdx = header.findIndex(h=>h.includes('start')||h.includes('data')); const endIdx = header.findIndex(h=>h.includes('end')||h.includes('fine')); if(nameIdx<0){ alert('Header CSV mancante colonna nome'); return } for(let i=1;i<lines.length;i++){ const row = parseCSVLine(lines[i]); if(!row || !row[nameIdx]) continue; const name = row[nameIdx]; const start = startIdx>=0?row[startIdx]:''; const end = endIdx>=0?row[endIdx]:''; const existing = fairs.find(x=>x.name===name); if(existing){ existing._imported = existing._imported||[]; existing._imported.push({when:new Date().toISOString()}); } else { fairs.push({ id: uid(), name, start, end, books: [], days: [], createdAt: new Date().toISOString() }); } } saveAndRefresh(false); alert('Import completato'); }; reader.readAsText(f,'utf-8'); }
+
+    function parseCSVLine(line){ const res=[]; let cur=''; let inQ=false; for(let i=0;i<line.length;i++){const ch=line[i]; if(ch==='"'){ inQ=!inQ; continue; } if(ch===',' && !inQ){ res.push(cur.trim()); cur=''; } else cur+=ch } if(cur!=='') res.push(cur.trim()); return res }
+
+    // Export single fair
+    exportFairBtn.onclick = ()=>{
+      if(!currentFairId){ alert('Seleziona fiera'); return }
+      const fair = findFair(currentFairId); const copies = fair.books.reduce((a,b)=>a+(b.totalSold||0),0); let cash=0,pos=0; fair.days.forEach(d=>{ Object.values(d.sales||{}).forEach(s=>{ cash+=s.cash||0; pos+=s.pos||0 }) }); const rows=[['name','start','end','copies_sold','cash','pos'],[fair.name,fair.start,fair.end,copies.toString(),cash.toFixed(2),pos.toFixed(2)]]; const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n'); const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=(fair.name.replace(/\s+/g,'_')||'fair')+'.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    // PWA helper
+    downloadManifestBtn.onclick = async ()=>{
+      try{ const manifest = { 
+  name:'My Book Fair', 
+  short_name:'MyBookFair', 
+  start_url:'./', 
+  display:'standalone', 
+  background_color:'#0b0b0b', 
+  theme_color:'#294d3e', 
+  icons:[
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon-512.png", 
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}; const mblob = new Blob([JSON.stringify(manifest)],{type:'application/json'}); const murl = URL.createObjectURL(mblob); let link = document.querySelector('link[rel="manifest"]'); if(!link){ link = document.createElement('link'); link.rel='manifest'; document.head.appendChild(link) } link.href = murl; const swCode = `self.addEventListener('install', e=>{self.skipWaiting();});self.addEventListener('activate', e=>{self.clients.claim();});self.addEventListener('fetch', e=>{ if(e.request.mode==='navigate'){ e.respondWith(fetch(e.request).catch(()=>caches.match('/'))); } });`; const swBlob = new Blob([swCode],{type:'text/javascript'}); const swUrl = URL.createObjectURL(swBlob); if('serviceWorker' in navigator){ await navigator.serviceWorker.register(swUrl).catch(err=>console.warn('sw reg failed',err)); } alert('Manifest e Service Worker creati in memoria. Se stai servendo questo file via HTTPS puoi ora aggiungere la PWA.'); }catch(e){ console.error(e); alert('Errore: '+e.message); }
+    }
+
+    
+    // FUNZIONE PER CONFRONTO FIERE
+    // Tab switching
+document.querySelectorAll('.tab-button').forEach(btn => {
+  btn.onclick = () => {
+    const tabId = btn.dataset.tab;
+    document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tabId + 'Tab').classList.add('active');
+    if(tabId === 'charts') renderCharts();
+  }
+});
+
+function renderReports() {
+  renderFairsSummary();
+}
+
+function renderFairsSummary() {
+  if(fairs.length === 0) {
+    fairsSummaryList.innerHTML = '<div class="small muted">Nessuna fiera registrata.</div>';
+    return;
+  }
+  
+  const completedFairs = fairs.filter(f => {
+    const endDate = new Date(f.end);
+    const today = new Date();
+    return endDate < today;
+  });
+  
+  if(completedFairs.length === 0) {
+    fairsSummaryList.innerHTML = '<div class="small muted">Nessuna fiera conclusa trovata.</div>';
+    return;
+  }
+  
+  let html = '';
+  let totalRevenue = 0;
+  let totalCopies = 0;
+  
+  completedFairs.forEach(f => {
+    const copies = f.books.reduce((a,b) => a + (b.totalSold || 0), 0);
+    let cash = 0, pos = 0;
+    f.days.forEach(d => {
+      Object.values(d.sales || {}).forEach(s => {
+        cash += s.cash || 0;
+        pos += s.pos || 0;
+      });
+    });
+    const revenue = cash + pos;
+    totalRevenue += revenue;
+    totalCopies += copies;
+    
+    html += `<div class="report-item">
+      <div>
+        <strong>${escapeHtml(f.name)}</strong>
+        <div class="small">${f.start} - ${f.end}</div>
+      </div>
+      <div style="text-align:right">
+        <div>€ ${revenue.toFixed(2)}</div>
+        <div class="small">${copies} copie</div>
+      </div>
+    </div>`;
+  });
+  
+  html += `<div class="report-item" style="border-top:2px solid var(--accent2);margin-top:8px;padding-top:12px">
+    <div><strong>TOTALE GENERALE</strong></div>
+    <div style="text-align:right">
+      <div><strong>€ ${totalRevenue.toFixed(2)}</strong></div>
+      <div class="small"><strong>${totalCopies} copie</strong></div>
+    </div>
+  </div>`;
+  
+  fairsSummaryList.innerHTML = html;
+}
+
+function renderCharts() {
+  if(fairs.length === 0) {
+    revenueChart.innerHTML = '<div class="small muted">Nessuna fiera da visualizzare.</div>';
+    copiesChart.innerHTML = '<div class="small muted">Nessuna fiera da visualizzare.</div>';
+    return;
+  }
+  
+  const fairsData = fairs.map(f => {
+    const copies = f.books.reduce((a,b) => a + (b.totalSold || 0), 0);
+    let cash = 0, pos = 0;
+    f.days.forEach(d => {
+      Object.values(d.sales || {}).forEach(s => {
+        cash += s.cash || 0;
+        pos += s.pos || 0;
+      });
+    });
+    return { name: f.name, revenue: cash + pos, copies };
+  });
+  
+  // Revenue chart
+  const maxRevenue = Math.max(...fairsData.map(f => f.revenue));
+  revenueChart.innerHTML = fairsData.map(f => {
+    const height = maxRevenue > 0 ? (f.revenue / maxRevenue) * 100 : 0;
+    return `<div class="bar" style="height:${height}%">
+      <div class="bar-value">€${f.revenue.toFixed(0)}</div>
+      <div class="bar-label">${escapeHtml(f.name.length > 15 ? f.name.slice(0,15) + '...' : f.name)}</div>
+    </div>`;
+  }).join('');
+  
+  // Copies chart
+  const maxCopies = Math.max(...fairsData.map(f => f.copies));
+  copiesChart.innerHTML = fairsData.map(f => {
+    const height = maxCopies > 0 ? (f.copies / maxCopies) * 100 : 0;
+    return `<div class="bar" style="height:${height}%">
+      <div class="bar-value">${f.copies}</div>
+      <div class="bar-label">${escapeHtml(f.name.length > 15 ? f.name.slice(0,15) + '...' : f.name)}</div>
+    </div>`;
+  }).join('');
+}
+// FINE CONFRONTO FIERE
+
+    // Init: ensure list shows existing fairs immediately
+    (function init(){
+      if(!Array.isArray(fairs)){
+        if(fairs && typeof fairs === 'object'){
+          const arr = Object.keys(fairs).map(k=>{ const v = fairs[k]; return { id: uid(), name: k, start: v.start||'', end: v.end||'', books: v.books||[], days: v.days?Object.entries(v.days).map(([date,d])=>({ date, sales: d.sales||{}, closed: !!d.closed })):[], createdAt: new Date().toISOString() } });
+          fairs = arr;
+        } else {
+          fairs = [];
+        }
+      }
+      // persist normalized structure
+      saveFairs(fairs);
+      refreshFairList();
+      if(fairs.length>0){ currentFairId = fairs[0].id; fairSelect.value = currentFairId; setCurrentFair(currentFairId, 0); }
+      renderReports();
+    })();
+    
+    if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then((reg) => console.log("Service Worker registrato:", reg))
+        .catch((err) => console.error("Errore Service Worker:", err));
+    });
+  }
+
+  </script>
+</body>
+</html>
+

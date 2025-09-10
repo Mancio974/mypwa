@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respirazione Wim Hof</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUmVzcGlyYXppb25lIFdpbSBIb2YiLCJzaG9ydF9uYW1lIjoiV2ltSG9mIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJzdGFydF91cmwiOiIvIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1qUWlJR2hsYVdkb2REMGlNalFpSUhacFpYZENiM2c5SWpBZ01DQXlOQ0F5TkNJZ1ptbHNiRDBpSTJZd05qQTJNQ0krUEdOcGNtTnNaU0JqZUQwaU1USWlJR041UFNJeE1pSWdjajBpTXlJZ1ptbHNiRDBpSTJabVptWWlMejQ4TDNOMlp6ND0iLCJzaXplcyI6IjI0eDI0IiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19">
+    <meta name="theme-color" content="#2d3748">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #1a202c;
+            color: #f7fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #2d3748;
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #4a5568;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #68d391;
+        }
+
+        .header p {
+            color: #a0aec0;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: #2d3748;
+            border-bottom: 1px solid #4a5568;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            background: none;
+            border: none;
+            color: #a0aec0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #68d391;
+            border-bottom: 2px solid #68d391;
+        }
+
+        .tab-content {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .settings-grid {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .setting-item {
+            background-color: #2d3748;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #4a5568;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: #4a5568;
+            border: 1px solid #718096;
+            border-radius: 4px;
+            color: #f7fafc;
+            font-size: 1rem;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .timer-display {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .timer-time {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #68d391;
+            margin-bottom: 0.5rem;
+        }
+
+        .timer-phase {
+            font-size: 1.2rem;
+            color: #a0aec0;
+            margin-bottom: 1rem;
+        }
+
+        .cycle-info {
+            font-size: 1rem;
+            color: #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background-color: #68d391;
+            color: #1a202c;
+        }
+
+        .btn-primary:hover {
+            background-color: #48bb78;
+        }
+
+        .btn-danger {
+            background-color: #f56565;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background-color: #e53e3e;
+        }
+
+        .btn-warning {
+            background-color: #ed8936;
+            color: #fff;
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+        }
+
+        .btn-warning:hover {
+            background-color: #dd6b20;
+        }
+
+        .start-button {
+            background-color: #68d391;
+            color: #1a202c;
+            padding: 2rem;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .start-button:hover {
+            background-color: #48bb78;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .volume-control {
+            flex: 1;
+        }
+
+        .stats-container {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background-color: #2d3748;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #4a5568;
+        }
+
+        .stat-title {
+            color: #68d391;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            color: #f7fafc;
+        }
+
+        .stat-date {
+            color: #a0aec0;
+            font-size: 0.8rem;
+        }
+
+        .chart-container {
+            background-color: #2d3748;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #4a5568;
+            margin-bottom: 1rem;
+        }
+
+        .month-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .history-item {
+            background-color: #2d3748;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #4a5568;
+            margin-bottom: 1rem;
+        }
+
+        .history-date {
+            color: #68d391;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-times {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-time {
+            background-color: #4a5568;
+            padding: 0.5rem;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .history-average {
+            color: #68d391;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #2d3748;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #4a5568;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal h3 {
+            color: #68d391;
+            margin-bottom: 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .export-section {
+            background-color: #2d3748;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #4a5568;
+            margin-bottom: 1rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .timer-time {
+                font-size: 2.5rem;
+            }
+            
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>RESPIRAZIONE WIM HOF</h1>
+        <p>Tieni traccia della tua pratica</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('practice')">Pratica</button>
+        <button class="tab" onclick="showTab('stats')">Statistiche</button>
+        <button class="tab" onclick="showTab('history')">Cronologia</button>
+    </div>
+
+    <!-- TAB PRATICA -->
+    <div id="practice-tab" class="tab-content">
+        <div id="settings-view">
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <label class="setting-label">Numero di cicli (2-8)</label>
+                    <input type="number" id="cycles" class="setting-input" min="2" max="8" value="4">
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Durata fase di recupero (15-25 secondi)</label>
+                    <input type="number" id="recovery-time" class="setting-input" min="15" max="25" value="15">
+                </div>
+
+                <div class="setting-item">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="beep-minutes">
+                        <label class="setting-label">Beep ogni minuto di ritenzione</label>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="beep-recovery">
+                        <label class="setting-label">Beep alla fine del recupero</label>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">File musicale</label>
+                    <input type="file" id="music-file" class="setting-input" accept="audio/*">
+                    <div id="audio-controls" class="audio-controls hidden">
+                        <button id="play-pause" class="btn btn-primary">Play</button>
+                        <div class="volume-control">
+                            <label>Volume</label>
+                            <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="start-button" onclick="startSession()">INIZIA SESSIONE</button>
+        </div>
+
+        <div id="timer-view" class="hidden">
+            <div class="timer-display">
+                <div class="timer-time" id="timer-display">00:00</div>
+                <div class="timer-phase" id="phase-display">Preparati per il ciclo 1</div>
+                <div class="cycle-info" id="cycle-info">Ciclo 1 di 4</div>
+            </div>
+
+            <div class="controls">
+                <button id="start-stop" class="btn btn-primary" onclick="toggleTimer()">START</button>
+                <button id="stop-session" class="btn btn-warning" onclick="handleStopSession()" 
+                        ondblclick="stopSession()">STOP SESSIONE<br><small>(doppio click)</small></button>
+            </div>
+
+            <div id="session-results" class="hidden">
+                <h3>Risultati della sessione:</h3>
+                <div id="results-display"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB STATISTICHE -->
+    <div id="stats-tab" class="tab-content hidden">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-title">Record Personale</div>
+                <div class="stat-value" id="best-time">00:00</div>
+                <div class="stat-date" id="best-date">-</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-title">Migliore Media</div>
+                <div class="stat-value" id="best-average">00:00</div>
+                <div class="stat-date" id="best-average-date">-</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="stat-title">Progressi Mensili</div>
+            <div class="month-selector">
+                <button class="btn btn-primary" onclick="changeMonth(-1)">‹ Precedente</button>
+                <span id="current-month"></span>
+                <button class="btn btn-primary" onclick="changeMonth(1)">Successivo ›</button>
+            </div>
+            <canvas id="progress-chart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- TAB CRONOLOGIA -->
+    <div id="history-tab" class="tab-content hidden">
+        <div class="export-section">
+            <h3 style="color: #68d391; margin-bottom: 1rem;">Gestione Dati</h3>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="exportData()">Esporta CSV</button>
+                <input type="file" id="import-file" accept=".csv" style="display: none;" onchange="importData()">
+                <button class="btn btn-primary" onclick="document.getElementById('import-file').click()">Importa CSV</button>
+                <button class="btn btn-primary" onclick="showAddSessionModal()">Aggiungi Sessione</button>
+            </div>
+        </div>
+
+        <div class="month-selector">
+            <button class="btn btn-primary" onclick="changeHistoryMonth(-1)">‹ Precedente</button>
+            <span id="history-month"></span>
+            <button class="btn btn-primary" onclick="changeHistoryMonth(1)">Successivo ›</button>
+        </div>
+
+        <div id="history-list"></div>
+    </div>
+
+    <!-- MODAL SALVATAGGIO SESSIONE -->
+    <div id="save-modal" class="modal">
+        <div class="modal-content">
+            <h3>Salvare la sessione?</h3>
+            <p>Vuoi salvare i risultati di questa sessione?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-danger" onclick="closeSaveModal(false)">No</button>
+                <button class="btn btn-primary" onclick="closeSaveModal(true)">Sì</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL AGGIUNGI SESSIONE -->
+    <div id="add-session-modal" class="modal">
+        <div class="modal-content">
+            <h3>Aggiungi Sessione Manuale</h3>
+            <div style="margin-bottom: 1rem;">
+                <label class="setting-label">Data</label>
+                <input type="date" id="manual-date" class="setting-input">
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label class="setting-label">Numero di cicli</label>
+                <input type="number" id="manual-cycles" class="setting-input" min="1" max="8" value="4">
+            </div>
+            <div id="manual-times-container">
+                <label class="setting-label">Tempi di apnea (mm:ss)</label>
+                <div id="manual-times"></div>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-danger" onclick="closeAddSessionModal()">Annulla</button>
+                <button class="btn btn-primary" onclick="saveManualSession()">Salva</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="beep-audio" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUeFDCH0fPTgjMGHm7A7+OZURE" type="audio/wav">
+    </audio>
+
+    <audio id="music-player" preload="none"></audio>
+
+    <script>
+        // Variabili globali
+        let currentSession = {
+            cycles: 4,
+            currentCycle: 0,
+            currentPhase: 'preparation', // preparation, retention, recovery
+            times: [],
+            recoveryTime: 15,
+            beepMinutes: false,
+            beepRecovery: false,
+            startTime: null,
+            isRunning: false
+        };
+
+        let timerInterval;
+        let currentStatsMonth = new Date();
+        let currentHistoryMonth = new Date();
+        let sessionData = JSON.parse(localStorage.getItem('wimhof-sessions') || '[]');
+
+        // Audio context per i beep
+        let audioContext;
+        let musicPlayer = document.getElementById('music-player');
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            updateStatsDisplay();
+            updateHistoryDisplay();
+            setupAudioControls();
+        });
+
+        // Gestione Tab
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            
+            if (tabName === 'stats') {
+                updateStatsDisplay();
+            } else if (tabName === 'history') {
+                updateHistoryDisplay();
+            }
+        }
+
+        // Gestione Audio
+        function setupAudioControls() {
+            const musicFile = document.getElementById('music-file');
+            const audioControls = document.getElementById('audio-controls');
+            const playPauseBtn = document.getElementById('play-pause');
+            const volumeSlider = document.getElementById('volume');
+
+            musicFile.addEventListener('change', function(e) {
+                if (e.target.files[0]) {
+                    const url = URL.createObjectURL(e.target.files[0]);
+                    musicPlayer.src = url;
+                    audioControls.classList.remove('hidden');
+                } else {
+                    audioControls.classList.add('hidden');
+                }
+            });
+
+            playPauseBtn.addEventListener('click', function() {
+                if (musicPlayer.paused) {
+                    musicPlayer.play();
+                    playPauseBtn.textContent = 'Pausa';
+                } else {
+                    musicPlayer.pause();
+                    playPauseBtn.textContent = 'Play';
+                }
+            });
+
+            volumeSlider.addEventListener('input', function() {
+                musicPlayer.volume = this.value;
+            });
+        }
+
+        // Funzioni Timer
+        function startSession() {
+            currentSession.cycles = parseInt(document.getElementById('cycles').value);
+            currentSession.recoveryTime = parseInt(document.getElementById('recovery-time').value);
+            currentSession.beepMinutes = document.getElementById('beep-minutes').checked;
+            currentSession.beepRecovery = document.getElementById('beep-recovery').checked;
+            currentSession.currentCycle = 1;
+            currentSession.currentPhase = 'preparation';
+            currentSession.times = [];
+            currentSession.isRunning = false;
+
+            document.getElementById('settings-view').classList.add('hidden');
+            document.getElementById('timer-view').classList.remove('hidden');
+
+            updateDisplay();
+        }
+
+        function toggleTimer() {
+            if (currentSession.currentPhase === 'preparation') {
+                startRetention();
+            } else if (currentSession.currentPhase === 'retention') {
+                if (currentSession.isRunning) {
+                    stopRetention();
+                } else {
+                    startRetention();
+                }
+            }
+        }
+
+        function startRetention() {
+            currentSession.currentPhase = 'retention';
+            currentSession.isRunning = true;
+            currentSession.startTime = Date.now();
+            
+            document.getElementById('start-stop').textContent = 'STOP';
+            document.getElementById('phase-display').textContent = 'Ritenzione in corso...';
+            
+            timerInterval = setInterval(updateTimer, 100);
+        }
+
+        function stopRetention() {
+            currentSession.isRunning = false;
+            clearInterval(timerInterval);
+            
+            const elapsedTime = Date.now() - currentSession.startTime;
+            const seconds = Math.floor(elapsedTime / 1000);
+            currentSession.times.push(seconds);
+            
+            startRecovery();
+        }
+
+        function startRecovery() {
+            currentSession.currentPhase = 'recovery';
+            let recoverySeconds = currentSession.recoveryTime;
+            
+            document.getElementById('start-stop').textContent = 'RECUPERO';
+            document.getElementById('start-stop').disabled = true;
+            
+            const recoveryInterval = setInterval(() => {
+                document.getElementById('phase-display').textContent = `Recupero: ${recoverySeconds}s`;
+                document.getElementById('timer-display').textContent = `00:${recoverySeconds.toString().padStart(2, '0')}`;
+                
+                if (recoverySeconds <= 5 && recoverySeconds > 0) {
+                    playBeep();
+                }
+                
+                recoverySeconds--;
+                
+                if (recoverySeconds < 0) {
+                    clearInterval(recoveryInterval);
+                    if (currentSession.beepRecovery) {
+                        playBeep();
+                    }
+                    endRecovery();
+                }
+            }, 1000);
+        }
+
+        function endRecovery() {
+            currentSession.currentCycle++;
+            
+            if (currentSession.currentCycle <= currentSession.cycles) {
+                currentSession.currentPhase = 'preparation';
+                document.getElementById('start-stop').textContent = 'START';
+                document.getElementById('start-stop').disabled = false;
+                updateDisplay();
+            } else {
+                endSession();
+            }
+        }
+
+        function updateTimer() {
+            const elapsed = Date.now() - currentSession.startTime;
+            const seconds = Math.floor(elapsed / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+            if (currentSession.beepMinutes && seconds > 0 && seconds % 60 === 0) {
+                playBeep();
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('phase-display').textContent = 
+                currentSession.currentPhase === 'preparation' 
+                    ? `Preparati per il ciclo ${currentSession.currentCycle}` 
+                    : document.getElementById('phase-display').textContent;
+                    
+            document.getElementById('cycle-info').textContent = 
+                `Ciclo ${currentSession.currentCycle} di ${currentSession.cycles}`;
+                
+            document.getElementById('timer-display').textContent = '00:00';
+        }
+
+        function handleStopSession() {
+            // Primo click - nessuna azione, serve il doppio click
+        }
+
+        function stopSession() {
+            clearInterval(timerInterval);
+            endSession();
+        }
+
+        function endSession() {
+            clearInterval(timerInterval);
+            
+            if (musicPlayer.src) {
+                musicPlayer.pause();
+                document.getElementById('play-pause').textContent = 'Play';
+            }
+            
+            showSaveModal();
+        }
+
+        function playBeep() {
+            const beepAudio = document.getElementById('beep-audio');
+            beepAudio.currentTime = 0;
+            beepAudio.play().catch(e => console.log('Beep non disponibile'));
+        }
+
+        // Modal Salvataggio
+        function showSaveModal() {
+            document.getElementById('save-modal').style.display = 'block';
+        }
+
+        function closeSaveModal(save) {
+            document.getElementById('save-modal').style.display = 'none';
+            
+            if (save && currentSession.times.length > 0) {
+                saveSession();
+            }
+            
+            resetToSettings();
+        }
+
+        function saveSession() {
+            try {
+                const session = {
+                    date: new Date().toISOString().split('T')[0],
+                    cycles: currentSession.times.length,
+                    times: currentSession.times,
+                    average: Math.round(currentSession.times.reduce((a, b) => a + b, 0) / currentSession.times.length),
+                    best: Math.max(...currentSession.times)
+                };
+                
+                sessionData.push(session);
+                sessionData.sort((a, b) => new Date(b.date) - new Date(a.date));
+                localStorage.setItem('wimhof-sessions', JSON.stringify(sessionData));
+                
+                updateStats();
+            } catch (e) {
+                console.error('Errore salvataggio:', e);
+            }
+        }
+
+        function resetToSettings() {
+            document.getElementById('timer-view').classList.add('hidden');
+            document.getElementById('settings-view').classList.remove('hidden');
+            document.getElementById('start-stop').disabled = false;
+            currentSession = {
+                cycles: 4,
+                currentCycle: 0,
+                currentPhase: 'preparation',
+                times: [],
+                recoveryTime: 15,
+                beepMinutes: false,
+                beepRecovery: false,
+                startTime: null,
+                isRunning: false
+            };
+        }
+
+        // Statistiche
+        function updateStats() {
+            if (sessionData.length === 0) return;
+            
+            const bestTime = Math.max(...sessionData.map(s => s.best));
+            const bestSession = sessionData.find(s => s.best === bestTime);
+            
+            const bestAverage = Math.max(...sessionData.map(s => s.average));
+            const bestAverageSession = sessionData.find(s => s.average === bestAverage);
+            
+            document.getElementById('best-time').textContent = formatTime(bestTime);
+            document.getElementById('best-date').textContent = formatDate(bestSession.date);
+            document.getElementById('best-average').textContent = formatTime(bestAverage);
+            document.getElementById('best-average-date').textContent = formatDate(bestAverageSession.date);
+        }
+
+        function updateStatsDisplay() {
+            const monthKey = `${currentStatsMonth.getFullYear()}-${(currentStatsMonth.getMonth() + 1).toString().padStart(2, '0')}`;
+            document.getElementById('current-month').textContent = 
+                currentStatsMonth.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+                
+            drawChart(monthKey);
+        }
+
+        function changeMonth(direction) {
+            currentStatsMonth.setMonth(currentStatsMonth.getMonth() + direction);
+            updateStatsDisplay();
+        }
+
+        function drawChart(monthKey) {
+            const canvas = document.getElementById('progress-chart');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const monthSessions = sessionData.filter(s => s.date.startsWith(monthKey));
+            
+            if (monthSessions.length === 0) {
+                ctx.fillStyle = '#a0aec0';
+                ctx.font = '16px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Nessun dato per questo mese', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+            
+            const maxValue = Math.max(...monthSessions.map(s => Math.max(s.best, s.average)));
+            const barWidth = Math.floor((canvas.width - 40) / monthSessions.length);
+            const maxBarHeight = canvas.height - 60;
+            
+            monthSessions.reverse().forEach((session, index) => {
+                const x = 20 + index * barWidth;
+                const bestHeight = (session.best / maxValue) * maxBarHeight;
+                const avgHeight = (session.average / maxValue) * maxBarHeight;
+                
+                // Bar per il record della sessione
+                ctx.fillStyle = '#68d391';
+                ctx.fillRect(x, canvas.height - 30 - bestHeight, barWidth * 0.4, bestHeight);
+                
+                // Bar per la media della sessione
+                ctx.fillStyle = '#ed8936';
+                ctx.fillRect(x + barWidth * 0.4, canvas.height - 30 - avgHeight, barWidth * 0.4, avgHeight);
+                
+                // Data
+                ctx.fillStyle = '#a0aec0';
+                ctx.font = '10px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.save();
+                ctx.translate(x + barWidth / 2, canvas.height - 10);
+                ctx.rotate(-Math.PI / 4);
+                ctx.fillText(session.date.split('-')[2], 0, 0);
+                ctx.restore();
+            });
+            
+            // Legenda
+            ctx.fillStyle = '#68d391';
+            ctx.fillRect(10, 10, 15, 15);
+            ctx.fillStyle = '#f7fafc';
+            ctx.font = '12px sans-serif';
+            ctx.fillText('Record', 30, 22);
+            
+            ctx.fillStyle = '#ed8936';
+            ctx.fillRect(100, 10, 15, 15);
+            ctx.fillStyle = '#f7fafc';
+            ctx.fillText('Media', 120, 22);
+        }
+
+        // Cronologia
+        function updateHistoryDisplay() {
+            const monthKey = `${currentHistoryMonth.getFullYear()}-${(currentHistoryMonth.getMonth() + 1).toString().padStart(2, '0')}`;
+            document.getElementById('history-month').textContent = 
+                currentHistoryMonth.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+                
+            const monthSessions = sessionData.filter(s => s.date.startsWith(monthKey));
+            const historyList = document.getElementById('history-list');
+            
+            if (monthSessions.length === 0) {
+                historyList.innerHTML = '<div class="history-item">Nessuna sessione per questo mese</div>';
+                return;
+            }
+            
+            historyList.innerHTML = monthSessions.map(session => `
+                <div class="history-item">
+                    <div class="history-date">${formatDate(session.date)}</div>
+                    <div class="history-times">
+                        ${session.times.map(time => `<div class="history-time">${formatTime(time)}</div>`).join('')}
+                    </div>
+                    <div class="history-average">Media: ${formatTime(session.average)}</div>
+                    <button class="btn btn-danger" style="margin-top: 0.5rem; font-size: 0.8rem;" 
+                            onclick="deleteSession('${session.date}')">Elimina</button>
+                </div>
+            `).join('');
+        }
+
+        function changeHistoryMonth(direction) {
+            currentHistoryMonth.setMonth(currentHistoryMonth.getMonth() + direction);
+            updateHistoryDisplay();
+        }
+
+        function deleteSession(date) {
+            if (confirm('Sei sicuro di voler eliminare questa sessione?')) {
+                sessionData = sessionData.filter(s => s.date !== date);
+                localStorage.setItem('wimhof-sessions', JSON.stringify(sessionData));
+                updateHistoryDisplay();
+                updateStats();
+            }
+        }
+
+        // Modal Aggiungi Sessione
+        function showAddSessionModal() {
+            document.getElementById('manual-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('manual-cycles').value = 4;
+            updateManualTimeInputs();
+            document.getElementById('add-session-modal').style.display = 'block';
+        }
+
+        function closeAddSessionModal() {
+            document.getElementById('add-session-modal').style.display = 'none';
+        }
+
+        function updateManualTimeInputs() {
+            const cycles = parseInt(document.getElementById('manual-cycles').value);
+            const container = document.getElementById('manual-times');
+            
+            container.innerHTML = '';
+            for (let i = 0; i < cycles; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'setting-input';
+                input.placeholder = '00:00';
+                input.style.marginBottom = '0.5rem';
+                input.pattern = '[0-9]{2}:[0-9]{2}';
+                container.appendChild(input);
+            }
+        }
+
+        document.getElementById('manual-cycles').addEventListener('change', updateManualTimeInputs);
+
+        function saveManualSession() {
+            const date = document.getElementById('manual-date').value;
+            const cycles = parseInt(document.getElementById('manual-cycles').value);
+            
+            const times = [];
+            let valid = true;
+            
+            for (let i = 0; i < cycles; i++) {
+                const input = document.getElementById(`manual-time-${i}`);
+                if (!input) {
+                    valid = false;
+                    break;
+                }
+                
+                const timeStr = input.value;
+                if (!/^\d{2}:\d{2}$/.test(timeStr)) {
+                    valid = false;
+                    break;
+                }
+                
+                const [minutes, seconds] = timeStr.split(':').map(Number);
+                times.push(minutes * 60 + seconds);
+            }
+            
+            if (!valid || times.length !== cycles) {
+                alert('Errore nei tempi inseriti');
+                return;
+            }
+            
+            // Controlla se esiste già una sessione per quella data
+            const existingIndex = sessionData.findIndex(s => s.date === date);
+            
+            const session = {
+                date,
+                cycles: times.length,
+                times,
+                average: Math.round(times.reduce((a, b) => a + b, 0) / times.length),
+                best: Math.max(...times)
+            };
+            
+            if (existingIndex >= 0) {
+                if (confirm('Esiste già una sessione per questa data. Sostituire?')) {
+                    sessionData[existingIndex] = session;
+                } else {
+                    return;
+                }
+            } else {
+                sessionData.push(session);
+            }
+            
+            sessionData.sort((a, b) => new Date(b.date) - new Date(a.date));
+            localStorage.setItem('wimhof-sessions', JSON.stringify(sessionData));
+            
+            closeAddSessionModal();
+            updateHistoryDisplay();
+            updateStats();
+        }
+
+        // Export/Import
+        function exportData() {
+            const csvContent = [
+                'Data,Cicli,Tempi,Media,Record',
+                ...sessionData.map(session => 
+                    `${session.date},${session.cycles},"${session.times.map(formatTime).join(';')}",${formatTime(session.average)},${formatTime(session.best)}`
+                )
+            ].join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `wimhof-backup-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            const file = document.getElementById('import-file').files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const lines = e.target.result.split('\n');
+                    const importedData = [];
+                    
+                    for (let i = 1; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (!line) continue;
+                        
+                        const [date, cycles, timesStr, average, best] = line.split(',');
+                        if (date && timesStr) {
+                            const times = timesStr.replace(/"/g, '').split(';').map(parseTime);
+                            importedData.push({
+                                date,
+                                cycles: parseInt(cycles),
+                                times,
+                                average: Math.round(times.reduce((a, b) => a + b, 0) / times.length),
+                                best: Math.max(...times)
+                            });
+                        }
+                    }
+                    
+                    if (importedData.length > 0) {
+                        sessionData = importedData;
+                        sessionData.sort((a, b) => new Date(b.date) - new Date(a.date));
+                        localStorage.setItem('wimhof-sessions', JSON.stringify(sessionData));
+                        updateHistoryDisplay();
+                        updateStats();
+                        alert(`Importate ${importedData.length} sessioni`);
+                    }
+                } catch (error) {
+                    alert('Errore durante l\'importazione del file');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Utility functions
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function parseTime(timeStr) {
+            const [minutes, seconds] = timeStr.split(':').map(Number);
+            return minutes * 60 + seconds;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr + 'T12:00:00');
+            return date.toLocaleDateString('it-IT', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            });
+        }
+
+        // Service Worker per PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgZnVuY3Rpb24oZXZlbnQpIHsKICBldmVudC53YWl0VW50aWwoc2VsZi5za2lwV2FpdGluZygpKTsKfSk7CgpzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2ZldGNoJywgZnVuY3Rpb24oZXZlbnQpIHsKICBldmVudC5yZXNwb25kV2l0aChmZXRjaChldmVudC5yZXF1ZXN0KSk7Cn0pOw==')
+                .then(function(registration) {
+                    console.log('ServiceWorker registrato');
+                })
+                .catch(function(error) {
+                    console.log('ServiceWorker fallito');
+                });
+            });
+        }
+
+        // Gestione orientamento schermo
+        function handleOrientationChange() {
+            setTimeout(() => {
+                if (window.innerHeight < window.innerWidth && window.innerHeight < 500) {
+                    document.body.style.fontSize = '14px';
+                } else {
+                    document.body.style.fontSize = '16px';
+                }
+            }, 100);
+        }
+
+        window.addEventListener('orientationchange', handleOrientationChange);
+        window.addEventListener('resize', handleOrientationChange);
+    </script>
+</body>
+</html>
