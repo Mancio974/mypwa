@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Consulente Editoriale PWA</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<style>
+  /* Tema scuro semplice */
+  body {
+    margin: 0; 
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  header {
+    background: #1f1f1f;
+    padding: 1rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  nav {
+    display: flex;
+    justify-content: space-around;
+    background: #222;
+    padding: 0.5rem 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+  }
+  nav button {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+  nav button.active {
+    border-top: 2px solid #D6D58E;
+    color: #D6D58E;
+  }
+  main {
+    padding: 1rem;
+    padding-bottom: 3.5rem; /* spazio per nav */
+  }
+  section {
+    display: none;
+  }
+  section.active {
+    display: block;
+  }
+  h2 {
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    color: #327355;
+  }
+  input, select, textarea, button {
+    width: 100%;
+    margin-bottom: 0.7rem;
+    padding: 0.6rem;
+    border-radius: 3px;
+    border: none;
+    background: #222;
+    color: #e0e0e0;
+    box-sizing: border-box;
+    font-size: 1rem;
+  }
+  button.primary {
+    background-color: #67734F;
+    color: white;
+    border: none;
+  }
+  button.danger {
+    background-color: #591C21;
+    color: white;
+    border: none;
+  }
+  .list-item {
+    background: #1b1b1b;
+    padding: 0.8rem;
+    margin-bottom: 0.6rem;
+    border-radius: 4px;
+  }
+  .item-actions {
+    margin-top: 0.3rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  label {
+    font-weight: bold;
+  }
+  /* Layout per form ed elenco */
+  .flex-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .flex-row > * {
+    flex: 1;
+  }
+  /* Filtro in rubrica */
+  #filter-category {
+    margin-bottom: 1rem;
+}
+</style>
+</head>
+<body>
+<header>Agenda per Consulenti Editoriali</header>
+<nav>
+  <button id="tab-calendar" class="active">Calendario</button>
+  <button id="tab-contacts">Rubrica</button>
+  <button id="tab-jobs">Progetti</button>
+</nav>
+<main>
+  <!-- Calendario -->
+  <section id="calendar-section" class="active" aria-label="Calendario">
+    <h2>Calendario</h2>
+    <form id="appointment-form">
+      <label for="app-title">Titolo Appuntamento</label>
+      <input type="text" id="app-title" required />
+
+      <label for="app-date">Data e Ora</label>
+      <input type="datetime-local" id="app-date" required />
+
+      <button type="submit" class="primary">Aggiungi / Aggiorna</button>
+    </form>
+    <div id="appointments-list"></div>
+  </section>
+
+  <!-- Rubrica -->
+  <section id="contacts-section" aria-label="Rubrica">
+    <h2>Rubrica</h2>
+
+    <label for="filter-category">Filtra per categoria</label>
+    <select id="filter-category">
+      <option value="">Tutte le categorie</option>
+      <option value="Editore">Editore</option>
+      <option value="Editor">Editor</option>
+      <option value="Redattore">Redattore</option>
+      <option value="Responsabile Editoriale">Responsabile Editoriale</option>
+      <option value="Grafico">Grafico</option>
+      <option value="Illustratore">Illustratore</option>
+      <option value="Collaboratore">Collaboratore</option>
+      <option value="Risorsa Esterne">Risorsa Esterne</option>
+    </select>
+
+    <form id="contact-form">
+      <label for="contact-category">Categoria</label>
+      <select id="contact-category" required>
+        <option value="">Seleziona categoria...</option>
+        <option value="Editore">Editore</option>
+        <option value="Editor">Editor</option>
+        <option value="Redattore">Redattore</option>
+        <option value="Responsabile Editoriale">Responsabile Editoriale</option>
+        <option value="Grafico">Grafico</option>
+        <option value="Illustratore">Illustratore</option>
+        <option value="Collaboratore">Collaboratore</option>
+        <option value="Risorsa Esterne">Risorsa Esterne</option>
+      </select>
+
+      <label for="contact-name">Nome e Cognome</label>
+      <input type="text" id="contact-name" required />
+
+      <label for="contact-phone">Numero di Telefono</label>
+      <input type="tel" id="contact-phone" />
+
+      <label for="contact-email">Indirizzo Email</label>
+      <input type="email" id="contact-email" />
+
+      <label for="contact-address">Indirizzo Ufficio</label>
+      <input type="text" id="contact-address" />
+
+      <label for="contact-notes">Note</label>
+      <textarea id="contact-notes" rows="3"></textarea>
+
+      <button type="submit" class="primary">Aggiungi / Aggiorna</button>
+    </form>
+    <div id="contacts-list"></div>
+  </section>
+
+  <!-- Lavorazioni -->
+  <section id="jobs-section" aria-label="Progetti in corso">
+    <h2>Progetti in corso</h2>
+    <form id="job-form">
+      <label for="job-title">Titolo Lavoro</label>
+      <input type="text" id="job-title" required />
+
+      <label for="job-notes">Note</label>
+      <textarea id="job-notes" rows="3"></textarea>
+
+      <label for="job-duration">Durata (giorni)</label>
+      <input type="number" id="job-duration" min="1" value="1" required />
+
+      <button type="submit" class="primary">Aggiungi / Aggiorna</button>
+    </form>
+    <div id="jobs-list"></div>
+  </section>
+
+</main>
+<script>
+  // Gestione tab
+  const tabs = {
+    'tab-calendar': 'calendar-section',
+    'tab-contacts': 'contacts-section',
+    'tab-jobs': 'jobs-section'
+  };
+  for (const tabId in tabs) {
+    document.getElementById(tabId).addEventListener('click', () => {
+      for (const tId in tabs) {
+        document.getElementById(tId).classList.toggle('active', tId === tabId);
+        document.getElementById(tabs[tId]).classList.toggle('active', tId === tabId);
+      }
+    });
+  }
+
+  // LocalStorage keys
+  const STORAGE_KEYS = {
+    APPOINTMENTS: 'pwa_appointments',
+    CONTACTS: 'pwa_contacts',
+    JOBS: 'pwa_jobs'
+  };
+
+  // Funzioni comuni
+  const loadData = (key) => JSON.parse(localStorage.getItem(key) || '[]');
+  const saveData = (key, data) => localStorage.setItem(key, JSON.stringify(data));
+
+  // --- Calendario ---
+  const appointmentForm = document.getElementById('appointment-form');
+  const appointmentsList = document.getElementById('appointments-list');
+  let editingAppointmentId = null;
+
+  function cleanupExpiredAppointments() {
+    let appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+    const now = new Date();
+    appointments = appointments.filter(app => new Date(app.date) > now);
+    saveData(STORAGE_KEYS.APPOINTMENTS, appointments);
+  }
+
+  function renderAppointments() {
+    cleanupExpiredAppointments();
+    let appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+    appointments.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    if (appointments.length === 0) {
+      appointmentsList.innerHTML = '<p>Nessun appuntamento.</p>';
+      return;
+    }
+    appointmentsList.innerHTML = '';
+    appointments.forEach((app, index) => {
+      const div = document.createElement('div');
+      div.className = 'list-item';
+      div.innerHTML = `
+        <strong>${app.title}</strong><br/>
+        <small>${new Date(app.date).toLocaleString()}</small>
+        <div class="item-actions">
+          <button onclick="editAppointment(${index})">Modifica</button>
+          <button class="danger" onclick="deleteAppointment(${index})">Elimina</button>
+        </div>`;
+      appointmentsList.appendChild(div);
+    });
+  }
+
+  function editAppointment(index) {
+    const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+    const app = appointments[index];
+    editingAppointmentId = index;
+    appointmentForm['app-title'].value = app.title;
+    appointmentForm['app-date'].value = app.date;
+  }
+
+  function deleteAppointment(index) {
+    if (!confirm("Sei sicuro di voler eliminare questo appuntamento?")) return;
+    let appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+    appointments.splice(index, 1);
+    saveData(STORAGE_KEYS.APPOINTMENTS, appointments);
+    renderAppointments();
+  }
+
+  appointmentForm.addEventListener('submit', e => {
+    e.preventDefault();
+    let appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+    const newEntry = {
+      title: appointmentForm['app-title'].value.trim(),
+      date: appointmentForm['app-date'].value
+    };
+    if (editingAppointmentId !== null) {
+      appointments[editingAppointmentId] = newEntry;
+      editingAppointmentId = null;
+    } else {
+      appointments.push(newEntry);
+    }
+    saveData(STORAGE_KEYS.APPOINTMENTS, appointments);
+    appointmentForm.reset();
+    renderAppointments();
+  });
+
+  // --- Rubrica ---
+  const contactForm = document.getElementById('contact-form');
+  const contactsList = document.getElementById('contacts-list');
+  const filterCategory = document.getElementById('filter-category');
+  let editingContactId = null;
+
+  function renderContacts() {
+    let contacts = loadData(STORAGE_KEYS.CONTACTS);
+    const selectedCategory = filterCategory.value;
+    if (selectedCategory) {
+      contacts = contacts.filter(c => c.category === selectedCategory);
+    }
+    contacts.sort((a, b) => a.name.localeCompare(b.name, 'it', { sensitivity: 'base' }));
+
+    if (contacts.length === 0) {
+      contactsList.innerHTML = '<p>Nessun contatto.</p>';
+      return;
+    }
+    contactsList.innerHTML = '';
+    contacts.forEach((contact, index) => {
+      const div = document.createElement('div');
+      div.className = 'list-item';
+      div.innerHTML = `
+        <strong>[${contact.category}] ${contact.name}</strong><br/>
+        <small>Tel: ${contact.phone || '-'} | Email: ${contact.email || '-'}</small><br/>
+        <small>Indirizzo: ${contact.address || '-'}</small><br/>
+        <small>Note: ${contact.notes || '-'}</small>
+        <div class="item-actions">
+          <button onclick="editContact(${index})">Modifica</button>
+          <button class="danger" onclick="deleteContact(${index})">Elimina</button>
+        </div>`;
+      contactsList.appendChild(div);
+    });
+  }
+
+  function editContact(index) {
+    const contacts = loadData(STORAGE_KEYS.CONTACTS);
+    const c = contacts[index];
+    editingContactId = index;
+    contactForm['contact-category'].value = c.category;
+    contactForm['contact-name'].value = c.name;
+    contactForm['contact-phone'].value = c.phone || '';
+    contactForm['contact-email'].value = c.email || '';
+    contactForm['contact-address'].value = c.address || '';
+    contactForm['contact-notes'].value = c.notes || '';
+  }
+
+  function deleteContact(index) {
+    if (!confirm("Sei sicuro di voler eliminare questo contatto?")) return;
+    let contacts = loadData(STORAGE_KEYS.CONTACTS);
+    contacts.splice(index, 1);
+    saveData(STORAGE_KEYS.CONTACTS, contacts);
+    renderContacts();
+  }
+
+  contactForm.addEventListener('submit', e => {
+    e.preventDefault();
+    let contacts = loadData(STORAGE_KEYS.CONTACTS);
+    const newContact = {
+      category: contactForm['contact-category'].value,
+      name: contactForm['contact-name'].value.trim(),
+      phone: contactForm['contact-phone'].value.trim(),
+      email: contactForm['contact-email'].value.trim(),
+      address: contactForm['contact-address'].value.trim(),
+      notes: contactForm['contact-notes'].value.trim()
+    };
+    if (editingContactId !== null) {
+      contacts[editingContactId] = newContact;
+      editingContactId = null;
+    } else {
+      contacts.push(newContact);
+    }
+    saveData(STORAGE_KEYS.CONTACTS, contacts);
+    contactForm.reset();
+    renderContacts();
+  });
+
+  filterCategory.addEventListener('change', () => {
+    renderContacts();
+  });
+
+  // --- Lavorazioni in corso ---
+  const jobForm = document.getElementById('job-form');
+  const jobsList = document.getElementById('jobs-list');
+  let editingJobId = null;
+
+  function renderJobs() {
+    const jobs = loadData(STORAGE_KEYS.JOBS);
+    if (jobs.length === 0) {
+      jobsList.innerHTML = '<p>Nessuna lavorazione in corso.</p>';
+      return;
+    }
+    jobsList.innerHTML = '';
+    jobs.forEach((job, index) => {
+      const div = document.createElement('div');
+      div.className = 'list-item';
+      div.innerHTML = `
+        <strong>${job.title}</strong> - durata: ${job.duration} giorn${job.duration > 1 ? 'i' : ''}<br/>
+        <small>Note: ${job.notes || '-'}</small>
+        <div class="item-actions">
+          <button onclick="editJob(${index})">Modifica</button>
+          <button class="danger" onclick="deleteJob(${index})">Elimina</button>
+        </div>`;
+      jobsList.appendChild(div);
+    });
+  }
+
+  function editJob(index) {
+    const jobs = loadData(STORAGE_KEYS.JOBS);
+    const job = jobs[index];
+    editingJobId = index;
+    jobForm['job-title'].value = job.title;
+    jobForm['job-notes'].value = job.notes || '';
+    jobForm['job-duration'].value = job.duration;
+  }
+
+  function deleteJob(index) {
+    if (!confirm("Sei sicuro di voler eliminare questa lavorazione?")) return;
+    let jobs = loadData(STORAGE_KEYS.JOBS);
+    jobs.splice(index, 1);
+    saveData(STORAGE_KEYS.JOBS, jobs);
+    renderJobs();
+  }
+
+  jobForm.addEventListener('submit', e => {
+    e.preventDefault();
+    let jobs = loadData(STORAGE_KEYS.JOBS);
+    const newJob = {
+      title: jobForm['job-title'].value.trim(),
+      notes: jobForm['job-notes'].value.trim(),
+      duration: parseInt(jobForm['job-duration'].value, 10)
+    };
+    if (editingJobId !== null) {
+      jobs[editingJobId] = newJob;
+      editingJobId = null;
+    } else {
+      jobs.push(newJob);
+    }
+    saveData(STORAGE_KEYS.JOBS, jobs);
+    jobForm.reset();
+    renderJobs();
+  });
+
+  // Avvio
+  renderAppointments();
+  renderContacts();
+  renderJobs();
+
+  // Registrazione service worker
+  init();
+  if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(() => console.log('SW registrato'))
+    .catch(err => console.error('SW errore:', err));
+}
+</script>
+</body>
+</html>
