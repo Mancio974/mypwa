@@ -107,6 +107,53 @@
   #filter-category {
     margin-bottom: 1rem;
 }
+/* Aggiungi queste regole al CSS esistente */
+.export-import-container {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #1b1b1b;
+  border-radius: 4px;
+}
+
+.export-import-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.export-import-buttons button {
+  flex: 1;
+  background-color: #327355;
+  color: white;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.export-import-buttons button:hover {
+  background-color: #3d8a66;
+}
+
+#import-file {
+  display: none;
+}
+
+.import-label {
+  display: block;
+  background-color: #67734F;
+  color: white;
+  text-align: center;
+  padding: 0.6rem;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-bottom: 0.7rem;
+}
+
+.import-label:hover {
+  background-color: #7a8659;
+}
 </style>
 </head>
 <body>
@@ -117,6 +164,16 @@
   <button id="tab-jobs">Progetti</button>
 </nav>
 <main>
+<!-- Container per Export/Import - DA AGGIUNGERE QUI -->
+  <div class="export-import-container">
+    <h3 style="margin-top: 0; color: #327355; font-size: 1rem;">Gestione Dati</h3>
+    <div class="export-import-buttons">
+      <button onclick="exportAllData()">📤 Esporta CSV</button>
+      <button onclick="document.getElementById('import-file').click()">📥 Importa CSV</button>
+    </div>
+    <input type="file" id="import-file" accept=".csv" onchange="importData(this)" />
+   
+  </div>
   <!-- Calendario -->
   <section id="calendar-section" class="active" aria-label="Calendario">
     <h2>Calendario</h2>
@@ -453,6 +510,165 @@
   navigator.serviceWorker.register('sw.js')
     .then(() => console.log('SW registrato'))
     .catch(err => console.error('SW errore:', err));
+}
+// Funzioni per Export/Import CSV - DA AGGIUNGERE AL JavaScript ESISTENTE
+
+function escapeCSV(field) {
+  if (field === null || field === undefined) return '';
+  const str = String(field);
+  if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+    return '"' + str.replace(/"/g, '""') + '"';
+  }
+  return str;
+}
+
+function exportAllData() {
+  try {
+    const appointments = loadData(STORAGE_KEYS.APPOINTMENTS);
+    const contacts = loadData(STORAGE_KEYS.CONTACTS);
+    const jobs = loadData(STORAGE_KEYS.JOBS);
+
+    let csvContent = '';
+    
+    // Header generale
+    csvContent += 'TIPO,TITOLO,DATA_ORA,CATEGORIA,NOME,TELEFONO,EMAIL,INDIRIZZO,NOTE,DURATA_GIORNI\n';
+    
+    // Appuntamenti
+    appointments.forEach(app => {
+      csvContent += `APPUNTAMENTO,${escapeCSV(app.title)},${escapeCSV(app.date)},,,,,,\n`;
+    });
+    
+    // Contatti
+    contacts.forEach(contact => {
+      csvContent += `CONTATTO,,${escapeCSV(contact.category)},${escapeCSV(contact.name)},${escapeCSV(contact.phone)},${escapeCSV(contact.email)},${escapeCSV(contact.address)},${escapeCSV(contact.notes)},\n`;
+    });
+    
+    // Progetti
+    jobs.forEach(job => {
+      csvContent += `PROGETTO,${escapeCSV(job.title)},,,,,,,${escapeCSV(job.notes)},${job.duration}\n`;
+    });
+
+    // Download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `consulente_editoriale_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    alert('Dati esportati con successo!');
+  } catch (error) {
+    console.error('Errore durante l\'esportazione:', error);
+    alert('Errore durante l\'esportazione dei dati');
+  }
+}
+
+function parseCSV(text) {
+  const lines = text.split('\n');
+  const result = [];
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    
+    const fields = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let j = 0; j < line.length; j++) {
+      const char = line[j];
+      if (char === '"') {
+        if (inQuotes && line[j + 1] === '"') {
+          current += '"';
+          j++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === ',' && !inQuotes) {
+        fields.push(current);
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    fields.push(current);
+    result.push(fields);
+  }
+  
+  return result;
+}
+
+function importData(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  if (!confirm('L\'importazione sostituirà tutti i dati esistenti. Continuare?')) {
+    input.value = '';
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const csvData = parseCSV(e.target.result);
+      const appointments = [];
+      const contacts = [];
+      const jobs = [];
+      
+      // Salta l'header
+      for (let i = 1; i < csvData.length; i++) {
+        const row = csvData[i];
+        if (row.length < 1) continue;
+        
+        const type = row[0];
+        
+        if (type === 'APPUNTAMENTO') {
+          appointments.push({
+            title: row[1] || '',
+            date: row[2] || ''
+          });
+        } else if (type === 'CONTATTO') {
+          contacts.push({
+            category: row[2] || '',
+            name: row[3] || '',
+            phone: row[4] || '',
+            email: row[5] || '',
+            address: row[6] || '',
+            notes: row[7] || ''
+          });
+        } else if (type === 'PROGETTO') {
+          jobs.push({
+            title: row[1] || '',
+            notes: row[8] || '',
+            duration: parseInt(row[9]) || 1
+          });
+        }
+      }
+      
+      // Salva i dati
+      saveData(STORAGE_KEYS.APPOINTMENTS, appointments);
+      saveData(STORAGE_KEYS.CONTACTS, contacts);
+      saveData(STORAGE_KEYS.JOBS, jobs);
+      
+      // Aggiorna le visualizzazioni
+      renderAppointments();
+      renderContacts();
+      renderJobs();
+      
+      alert(`Importazione completata!\nAppuntamenti: ${appointments.length}\nContatti: ${contacts.length}\nProgetti: ${jobs.length}`);
+      
+    } catch (error) {
+      console.error('Errore durante l\'importazione:', error);
+      alert('Errore durante l\'importazione del file CSV');
+    }
+    
+    input.value = '';
+  };
+  
+  reader.readAsText(file, 'UTF-8');
 }
 </script>
 </body>
